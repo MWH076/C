@@ -1,0 +1,505 @@
+<!-- This code is copyright by Me (Mike/Keyboard0076) 2024. You may NOT use/edit/sell/or redistribute this code. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D2 - ChatByMike</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://unpkg.com/@webpixels/css@1.2.6/dist/index.css" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <main class="py-10 bg-surface-secondary">
+        <div class="container-xl">
+            <div id="login-container" class="card">
+                <div class="card-body text-center">
+                    <button id="login-button" class="btn btn-primary">Login with Google</button>
+                </div>
+            </div>
+
+            <div class="card d-none" id="chat-container">
+                <div class="card-header d-flex align-items-center">
+                    <h5 class="me-auto">D2 By Mike</h5>
+                    <div class="me-auto">
+                        <div class="hstack gap-2">
+                            <button id="global-chat-button" type="button"
+                                class="btn btn-sm btn-square bg-green-500 bg-opacity-20 bg-opacity-100-hover text-green-500 text-white-hover">
+                                <i class="ph ph-globe"></i>
+                            </button>
+                            <button id="dms-button" type="button"
+                                class="btn btn-sm btn-square bg-blue-500 bg-opacity-20 bg-opacity-100-hover text-blue-500 text-white-hover">
+                                <i class="ph ph-chats-teardrop"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a class="d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-haspopup="false" aria-expanded="false">
+                            <div>
+                                <div class="avatar avatar-sm bg-indigo-500 rounded-circle text-white">
+                                    <img alt="" id="profile-pic">
+                                </div>
+                            </div>
+                            <div class="d-none d-sm-block ms-3">
+                                <span class="h6" id="display-name">Username</span>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="dropdown-header">
+                                <span class="d-block text-sm text-muted mb-1">Signed in as</span>
+                                <span class="d-block text-heading font-semibold" id="dropdown-username">Username</span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item d-flex" data-bs-toggle="modal" data-bs-target="#modal_example">
+                                <i class="ph ph-gear text-lg me-3"></i>Settings
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" id="logout-button">
+                                <i class="ph ph-user text-lg me-3"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Chat Container -->
+            <div id="global-chat" class="d-none">
+                <div class="card h-lg-full mt-4">
+                    <div class="card-body py-0 position-relative">
+                        <div class="list-group list-group-flush" id="chat-box">
+                            <!-- Chat messages will dynamically appear here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div>
+                        <div class="textarea-autosize p-6" data-replicated-value="">
+                            <textarea id="chat-input" class="form-control border-0 shadow-none p-0" rows="2"
+                                placeholder="Type your message..."
+                                oninput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                        </div>
+                        <div class="d-flex align-items-center px-6 py-3 border-top">
+                            <div class="flex-fill d-flex align-items-center">
+                                <h6 class="font-semibold text-xs text-muted text-opacity-70"><i
+                                        class="ph ph-copyright"></i> Copyright Mike 2024</h6>
+                            </div>
+                            <div class="text-end">
+                                <div class="hstack gap-5 align-items-center">
+                                    <a href="#!" class="text-lg text-muted text-primary-hover" data-bs-toggle="modal"
+                                        data-bs-target="#format-help-modal">
+                                        <i class="ph ph-text-align-left"></i>
+                                    </a>
+                                    <a href="#!" class="text-lg text-muted text-primary-hover" id="send-button">
+                                        <i class="ph ph-paper-plane-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Global Chat Container -->
+
+            <!-- DM Container -->
+            <div id="dm-container" class="d-none">
+                <div class="row">
+                    <div class="col-lg-4 mt-4">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <div class="mb-4">
+                                    <h4 class="mb-1">Your Direct Messages</h4>
+                                </div>
+                                <div class="g-3">
+                                    <div class="input-group input-group-sm input-group-inline mb-1"><span
+                                            class="input-group-text"><i class="ph ph-magnifying-glass"></i></span><input
+                                            type="email" class="form-control" placeholder="Search direct messages"
+                                            id="dm-search-input"></div>
+                                </div>
+                                <div id="dm-list" class="vstack gap-3 my-4">
+                                    <!-- DM user list will dynamically appear here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 mt-4">
+                        <div class="card">
+                            <div class="card-body py-0 position-relative">
+                                <div class="list-group list-group-flush" id="dm-chat-box">
+                                    <!-- DM messages will dynamically appear here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div>
+                                <div class="textarea-autosize p-6" data-replicated-value="">
+                                    <textarea id="dm-chat-input" class="form-control border-0 shadow-none p-0" rows="2"
+                                        placeholder="Type your message..."
+                                        oninput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                                </div>
+                                <div class="d-flex align-items-center px-6 py-3 border-top">
+                                    <div class="flex-fill d-flex align-items-center">
+                                        <h6 class="font-semibold text-xs text-muted text-opacity-70"><i
+                                                class="ph ph-copyright"></i> Copyright Mike 2024</h6>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="hstack gap-5 align-items-center">
+                                            <a href="#!" class="text-lg text-muted text-primary-hover"
+                                                data-bs-toggle="modal" data-bs-target="#format-help-modal">
+                                                <i class="ph ph-text-align-left"></i>
+                                            </a>
+                                            <a href="#!" class="text-lg text-muted text-primary-hover"
+                                                id="dm-send-button">
+                                                <i class="ph ph-paper-plane-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of DM Container -->
+        </div>
+    </main>
+
+    <div class="modal" id="modal_example" tabindex="-1" aria-labelledby="modal_example" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">Settings</h5>
+                    <div class="text-xs ms-auto">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <form>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="mb-5">
+                                        <div>
+                                            <label class="form-label">
+                                                Change Username
+                                            </label>
+                                            <input type="text" class="form-control" id="new-display-name">
+                                        </div>
+                                    </div>
+                                    <div class="card bg-dark border-0 shadow-none ml-md-4">
+                                        <div class="card-body">
+                                            <h5 class="text-white mb-2">Username guidelines</h5>
+                                            <ul class="text-blue-400 font-code pl-4 mb-0">
+                                                <li class="text-xs">Minimum 3 characters</li>
+                                                <li class="text-xs">Maximum 30 characters</li>
+                                                <li class="text-xs">Must be unqiue</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="mb-5">
+                                        <div>
+                                            <label class="form-label">
+                                                Change Bio
+                                            </label>
+                                            <textarea class="form-control"
+                                                placeholder="Make it short, make it sweet, make it yours!" id="new-bio"
+                                                rows="3">
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="card bg-dark border-0 shadow-none ml-md-4">
+                                        <div class="card-body">
+                                            <h5 class="text-white mb-2">Bio guidelines</h5>
+                                            <ul class="text-blue-400 font-code pl-4 mb-0">
+                                                <li class="text-xs">Maximum 500 characters</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="mb-5">
+                                        <div>
+                                            <label class="form-label">
+                                                Change Location
+                                            </label>
+                                            <input type="text" class="form-control"
+                                                placeholder="In a cozy cave with WiFi!" id="new-location">
+                                        </div>
+                                    </div>
+                                    <div class="card bg-dark border-0 shadow-none ml-md-4">
+                                        <div class="card-body">
+                                            <h5 class="text-white mb-2">Location guidelines</h5>
+                                            <ul class="text-blue-400 font-code pl-4 mb-0">
+                                                <li class="text-xs">Maximum 50 characters</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="save-settings-button">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="profile_modal" tabindex="-1" aria-labelledby="profile_modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Profile</h5>
+                    <div class="text-xs ms-auto">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <header class="bg-surface-secondary rounded-2">
+                        <div class="container-fluid">
+                            <div class="row g-0">
+                                <div class="col ps-4 pt-4">
+                                    <h1 class="h2" id="profile-display-name">Username</h1>
+                                    <div class="d-flex gap-2 flex-wrap mt-3 d-none d-sm-block">
+                                        <div id="profile-badges">Badges</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                    <main class="py-6 bg-surface-secondary rounded-2">
+                        <div class="container-fluid max-w-screen-xl">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="mb-3">Biography</h5>
+                                    <p class="text-sm lh-relaxed mb-4" id="profile-bio">Bio</p>
+                                </div>
+                            </div>
+                            <div class="card mt-4">
+                                <div class="card-body">
+                                    <h5 class="mb-4">Location</h5>
+                                    <div class="d-flex align-items-center"><i
+                                            class="ph ph-map-pin-line me-2 text-muted"></i> <a href="#"
+                                            class="text-sm text-heading text-primary-hover"
+                                            id="profile-location">Location</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="dm-button">Send DM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="format-help-modal" tabindex="-1" aria-labelledby="format-help-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="ph ph-swatches text-lg"></i> Chat Formatting</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card mb-3">
+                        <div class="card-header d-flex align-items-center">
+                            <h5 class="me-auto">Text Colors</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-nowrap">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Input</th>
+                                        <th scope="col">Output</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="user-select-all">[pi]Your text[/pi]</span></td>
+                                        <td><span class="text-pink-500">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[pi]TEXT[/pi]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">[re]Your text[/re]</span></td>
+                                        <td><span class="text-red-500">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[re]TEXT[/re]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">[or]Your text[/or]</span></td>
+                                        <td><span class="text-orange-500">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[or]TEXT[/or]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">[ye]Your text[/ye]</span></td>
+                                        <td><span class="text-yellow-500">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[ye]TEXT[/ye]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">[gr]Your text[/gr]</span></td>
+                                        <td><span class="text-green-500">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[gr]TEXT[/gr]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">[bl]Your text[/bl]</span></td>
+                                        <td><span class="text-blue-500">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[bl]TEXT[/bl]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">[pu]Your text[/pu]</span></td>
+                                        <td><span class="text-purple-500">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[pu]TEXT[/pu]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header d-flex align-items-center">
+                            <h5 class="me-auto">Gradient Text Colors</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-nowrap">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Input</th>
+                                        <th scope="col">Output</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="user-select-all">[ra]Your text[/ra]</span></td>
+                                        <td><span style="background-image: linear-gradient(to right, #EF476F, #FFAE66, #FFD166, #06D6A0, #118AB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[ra]TEXT[/ra]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">[us]Your text[/us]</span></td>
+                                        <td><span style="background-image: linear-gradient(to right, #FF334F, #DEE1F3, #3471E3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="[us]TEXT[/us]" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center">
+                            <h5 class="me-auto">Text Styles</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-nowrap">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Input</th>
+                                        <th scope="col">Output</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="user-select-all">**Your text**</span></td>
+                                        <td><strong>Your text</strong></td>
+                                        <td class="text-end">
+                                            <button data-format="**TEXT**" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">*Your text*</span></td>
+                                        <td><em>Your text</em></td>
+                                        <td class="text-end">
+                                            <button data-format="*TEXT*" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">__Your text__</span></td>
+                                        <td><u>Your text</u></td>
+                                        <td class="text-end">
+                                            <button data-format="__TEXT__" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="user-select-all">||Your text||</span></td>
+                                        <td><span class="spoiler">Your text</span></td>
+                                        <td class="text-end">
+                                            <button data-format="||TEXT||" class="btn btn-sm btn-square btn-neutral format-example">
+                                                <i class="ph ph-list-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
