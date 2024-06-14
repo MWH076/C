@@ -1,4 +1,7 @@
-// This code is copyright by Me (Mike/Keyboard0076) 2024. You may NOT use/edit/sell/or redistribute this code. -->
+/*
+    This code is the intellectual property of the owner.
+    Unauthorized editing, removal, updating, adding, duplicating, selling, or reusing of this code is strictly prohibited.
+*/
 
 var firebaseConfig = {
     apiKey: "AIzaSyBOjZnu1KMl4G-Y297axV2OnG302UL37QU",
