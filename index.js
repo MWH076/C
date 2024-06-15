@@ -143,7 +143,8 @@ function loadProfile() {
             elements.newDisplayName.value = displayName;
             elements.newBio.value = userData.bio || '';
             elements.newLocation.value = userData.location || '';
-            document.getElementById('profile-friendliness-score').innerText = `Username's score: ${userData.friendlinessScore || 0}`;
+            const scorePercentage = userData.totalVotes ? Math.round((userData.friendlinessScore / userData.totalVotes) * 100) : 0;
+            document.getElementById('profile-friendliness-score').innerText = `Username's score: ${scorePercentage}%`;
             document.getElementById('profile-total-votes').innerText = `Total votes: ${userData.totalVotes || 0}`;
         } else {
             console.log("No such user document!");
@@ -214,30 +215,57 @@ function voteFriendliness(isUpvote) {
     }
 
     const userRef = db.collection('users').doc(currentDmUserId);
+    const voteRef = userRef.collection('votes').doc(user.uid);
 
-    userRef.get().then(doc => {
+    voteRef.get().then(doc => {
         if (doc.exists) {
-            const userData = doc.data();
-            let newScore = userData.friendlinessScore || 0;
-            let newTotalVotes = userData.totalVotes || 0;
-
-            if (isUpvote) {
-                newScore++;
-            } else {
-                newScore--;
-            }
-            newTotalVotes++;
-
-            userRef.update({
-                friendlinessScore: newScore,
-                totalVotes: newTotalVotes
-            }).then(() => {
-                loadProfile();
-            }).catch(console.error);
+            alert("You have already voted for this user.");
         } else {
-            console.error("No such user document!");
+            userRef.get().then(userDoc => {
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    let newScore = userData.friendlinessScore || 0;
+                    let newTotalVotes = userData.totalVotes || 0;
+
+                    if (isUpvote) {
+                        newScore++;
+                    } else {
+                        newScore--;
+                    }
+
+                    newTotalVotes++;
+                    if (newScore < 0) newScore = 0;
+
+                    voteRef.set({
+                        vote: isUpvote ? 1 : -1,
+                        timestamp: firebase.firestore.Timestamp.now()
+                    });
+
+                    userRef.update({
+                        friendlinessScore: newScore,
+                        totalVotes: newTotalVotes
+                    }).then(() => {
+                        loadProfile(); // Ensure the profile is reloaded to reflect the updated score
+                        highlightVote(isUpvote);
+                    }).catch(console.error);
+                } else {
+                    console.error("No such user document!");
+                }
+            }).catch(console.error);
         }
     }).catch(console.error);
+}
+
+function highlightVote(isUpvote) {
+    document.querySelectorAll('.btn-group .btn').forEach(button => {
+        button.classList.remove('active');
+    });
+
+    if (isUpvote) {
+        document.querySelector('.btn-group .btn-neutral[data-vote="up"]').classList.add('active');
+    } else {
+        document.querySelector('.btn-group .btn-neutral[data-vote="down"]').classList.add('active');
+    }
 }
 
 // Navigation functions
