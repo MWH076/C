@@ -48,6 +48,7 @@ const elements = {
 const NoNoWords = ['badword1', 'badword2', 'badword3'];
 
 // Constants
+const PROFILE_MODAL_ID = 'profile_modal';
 const MESSAGE_LIMIT = 5000;
 const RATE_LIMIT = 5; // Number of messages allowed per TIME_FRAME
 const TIME_FRAME = 60000; // MS
