@@ -129,24 +129,27 @@ function closeModal(modalId) {
     modalInstance.hide();
 }
 
-function loadProfile(uid) {
-    const userRef = db.collection('users').doc(uid);
+function loadProfile() {
+    const user = auth.currentUser;
+    const userRef = db.collection('users').doc(user.uid);
 
     userRef.get().then(doc => {
         if (doc.exists) {
             const userData = doc.data();
-            document.getElementById('profile-display-name').innerText = userData.displayName;
-            document.getElementById('profile-bio').innerText = userData.bio || 'Bio pending approval from my cat. Meow back later!';
-            document.getElementById('profile-location').innerText = userData.location || 'No location yet, exploring Earth!';
+            elements.profilePic.src = user.photoURL;
+            const displayName = userData.displayName || user.displayName;
+            elements.displayName.innerText = displayName;
+            elements.dropdownUsername.innerText = displayName;
+            elements.newDisplayName.value = displayName;
+            elements.newBio.value = userData.bio || '';
+            elements.newLocation.value = userData.location || '';
             const scorePercentage = userData.totalVotes ? Math.round((userData.friendlinessScore / userData.totalVotes) * 100) : 0;
             document.getElementById('profile-friendliness-score').innerText = `Username's score: ${scorePercentage}%`;
             document.getElementById('profile-total-votes').innerText = `Total votes: ${userData.totalVotes || 0}`;
         } else {
             console.log("No such user document!");
         }
-    }).catch(error => {
-        console.error("Error fetching user document:", error);
-    });
+    }).catch(console.error);
 }
 
 function showProfileModal(uid) {
