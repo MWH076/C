@@ -239,21 +239,29 @@ function voteFriendliness(isUpvote) {
                     voteRef.set({
                         vote: isUpvote ? 1 : -1,
                         timestamp: firebase.firestore.Timestamp.now()
-                    });
-
-                    userRef.update({
-                        friendlinessScore: newScore,
-                        totalVotes: newTotalVotes
                     }).then(() => {
-                        loadProfile(); // Ensure the profile is reloaded to reflect the updated score
-                        highlightVote(isUpvote);
-                    }).catch(console.error);
+                        userRef.update({
+                            friendlinessScore: newScore,
+                            totalVotes: newTotalVotes
+                        }).then(() => {
+                            loadProfile();
+                            highlightVote(isUpvote);
+                        }).catch(error => {
+                            console.error("Error updating user document:", error);
+                        });
+                    }).catch(error => {
+                        console.error("Error setting vote document:", error);
+                    });
                 } else {
                     console.error("No such user document!");
                 }
-            }).catch(console.error);
+            }).catch(error => {
+                console.error("Error fetching user document:", error);
+            });
         }
-    }).catch(console.error);
+    }).catch(error => {
+        console.error("Error fetching vote document:", error);
+    });
 }
 
 function highlightVote(isUpvote) {
