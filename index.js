@@ -208,14 +208,14 @@ function voteFriendliness(isUpvote) {
         return;
     }
 
-    const user = auth.currentUser;
-    if (!user) {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
         alert("You must be logged in to vote.");
         return;
     }
 
     const userRef = db.collection('users').doc(currentDmUserId);
-    const voteRef = userRef.collection('votes').doc(user.uid);
+    const voteRef = userRef.collection('votes').doc(currentUser.uid);
 
     voteRef.get().then(doc => {
         if (doc.exists) {
