@@ -103,7 +103,9 @@ function setupUser(user) {
                 displayName: user.displayName,
                 bio: "",
                 location: "",
-                badges: ["User"]
+                badges: ["User"],
+                friendlinessScore: 0,
+                totalVotes: 0
             }, { merge: true });
         }
     }).catch(console.error);
@@ -141,6 +143,8 @@ function loadProfile() {
             elements.newDisplayName.value = displayName;
             elements.newBio.value = userData.bio || '';
             elements.newLocation.value = userData.location || '';
+            document.getElementById('profile-friendliness-score').innerText = `Username's score: ${userData.friendlinessScore || 0}`;
+            document.getElementById('profile-total-votes').innerText = `Total votes: ${userData.totalVotes || 0}`;
         } else {
             console.log("No such user document!");
         }
@@ -192,6 +196,40 @@ function createBadge(badge) {
     const badgeClass = badgeClasses[badgeName];
 
     return `<span class="badge ${badgeClass}" data-toggle="tooltip" data-placement="top" title="${badgeName}"><i class="ph ${badgeClass}"></i></span>`;
+}
+
+function voteFriendliness(isUpvote) {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("You must be logged in to vote.");
+        return;
+    }
+
+    const userRef = db.collection('users').doc(currentDmUserId);
+
+    userRef.get().then(doc => {
+        if (doc.exists) {
+            const userData = doc.data();
+            let newScore = userData.friendlinessScore || 0;
+            let newTotalVotes = userData.totalVotes || 0;
+
+            if (isUpvote) {
+                newScore++;
+            } else {
+                newScore--;
+            }
+            newTotalVotes++;
+
+            userRef.update({
+                friendlinessScore: newScore,
+                totalVotes: newTotalVotes
+            }).then(() => {
+                loadProfile();
+            }).catch(console.error);
+        } else {
+            console.error("No such user document!");
+        }
+    }).catch(console.error);
 }
 
 // Navigation functions
