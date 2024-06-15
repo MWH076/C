@@ -47,10 +47,6 @@ const elements = {
 // Constants
 const MESSAGE_LIMIT = 5000;
 const PROFILE_MODAL_ID = 'profile_modal';
-const NAME_MIN_LENGTH = 3;
-const NAME_MAX_LENGTH = 30;
-const BIO_MAX_LENGTH = 500;
-const LOCATION_MAX_LENGTH = 50;
 
 // Variables
 let currentDmUserId = null;
@@ -252,7 +248,7 @@ function parseMessageText(text) {
     return text;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     function insertFormat(format) {
         const chatInput = elements.chatInput;
         const startPos = chatInput.selectionStart;
@@ -428,10 +424,6 @@ function saveSettings() {
     const newLocation = elements.newLocation.value;
     const user = auth.currentUser;
 
-    if (!isValidName(newName) || !isValidBio(newBio) || !isValidLocation(newLocation)) {
-        return;
-    }
-
     db.collection('users').where('displayName', '==', newName).get().then(snapshot => {
         if (!snapshot.empty && snapshot.docs[0].id !== user.uid) {
             alert("Display name is already taken. Please choose another one.");
@@ -441,30 +433,6 @@ function saveSettings() {
         const updates = { displayName: newName, bio: newBio, location: newLocation };
         updateUserProfile(user, updates);
     });
-}
-
-function isValidName(name) {
-    if (name.length < NAME_MIN_LENGTH || name.length > NAME_MAX_LENGTH) {
-        alert(`Display name must be between ${NAME_MIN_LENGTH} and ${NAME_MAX_LENGTH} characters.`);
-        return false;
-    }
-    return true;
-}
-
-function isValidBio(bio) {
-    if (bio.length < 0 || bio.length > BIO_MAX_LENGTH) {
-        alert(`Bio cannot be longer than ${BIO_MAX_LENGTH} characters.`);
-        return false;
-    }
-    return true;
-}
-
-function isValidLocation(location) {
-    if (location.length < 0 || location.length > LOCATION_MAX_LENGTH) {
-        alert(`Location cannot be longer than ${LOCATION_MAX_LENGTH} characters.`);
-        return false;
-    }
-    return true;
 }
 
 function updateUserProfile(user, updates) {
