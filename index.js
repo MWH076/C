@@ -152,6 +152,7 @@ function loadProfile() {
 }
 
 function showProfileModal(uid) {
+    currentDmUserId = uid;
     const userRef = db.collection('users').doc(uid);
 
     userRef.get().then(doc => {
@@ -161,6 +162,8 @@ function showProfileModal(uid) {
             document.getElementById('profile-bio').innerText = userData.bio || 'Bio pending approval from my cat. Meow back later!';
             document.getElementById('profile-location').innerText = userData.location || 'No location yet, exploring Earth!';
             document.getElementById('profile-badges').innerHTML = userData.badges.map(createBadge).join(' ');
+            document.getElementById('profile-friendliness-score').innerText = `Username's score: ${userData.friendlinessScore || 0}`;
+            document.getElementById('profile-total-votes').innerText = `Total votes: ${userData.totalVotes || 0}`;
 
             openModal(PROFILE_MODAL_ID);
 
@@ -199,6 +202,11 @@ function createBadge(badge) {
 }
 
 function voteFriendliness(isUpvote) {
+    if (!currentDmUserId) {
+        console.error("currentDmUserId is not set. Cannot vote.");
+        return;
+    }
+
     const user = auth.currentUser;
     if (!user) {
         alert("You must be logged in to vote.");
