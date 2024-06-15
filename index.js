@@ -224,7 +224,8 @@ function canSendMessage(uid) {
         timestamps.push(now);
         return true;
     } else {
-        return false;
+        const waitTime = TIME_FRAME - (now - timestamps[0]);
+        return waitTime;
     }
 }
 
@@ -241,8 +242,10 @@ function sendMessage() {
     }
     if (messageText) {
         const uid = auth.currentUser.uid;
-        if (!canSendMessage(uid)) {
-            alert("You are sending messages too quickly. Please slow down.");
+        const canSend = canSendMessage(uid);
+        if (canSend !== true) {
+            const waitSeconds = (canSend / 1000).toFixed(1);
+            alert(`You are sending messages too quickly. Please wait ${waitSeconds} seconds.`);
             return;
         }
 
@@ -352,8 +355,10 @@ function sendDmMessage() {
     }
     if (messageText && currentDmUserId) {
         const uid = auth.currentUser.uid;
-        if (!canSendMessage(uid)) {
-            alert("You are sending messages too quickly. Please slow down.");
+        const canSend = canSendMessage(uid);
+        if (canSend !== true) {
+            const waitSeconds = (canSend / 1000).toFixed(1);
+            alert(`You are sending messages too quickly. Please wait ${waitSeconds} seconds.`);
             return;
         }
 
