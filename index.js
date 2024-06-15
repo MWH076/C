@@ -48,7 +48,6 @@ const elements = {
 const NoNoWords = ['badword1', 'badword2', 'badword3'];
 
 // Constants
-const PROFILE_MODAL_ID = 'profile_modal';
 const MESSAGE_LIMIT = 5000;
 const RATE_LIMIT = 5; // Number of messages allowed per TIME_FRAME
 const TIME_FRAME = 60000; // MS
@@ -58,16 +57,17 @@ const messageTimestamps = {};
 let currentDmUserId = null;
 
 // Event listeners
-addEventListeners([
-    { element: elements.loginButton, event: 'click', handler: login },
-    { element: elements.logoutButton, event: 'click', handler: logout },
-    { element: elements.sendButton, event: 'click', handler: sendMessage },
-    { element: elements.saveSettingsButton, event: 'click', handler: saveSettings },
-    { element: elements.globalChatButton, event: 'click', handler: showGlobalChat },
-    { element: elements.dmsButton, event: 'click', handler: showDms },
-    { element: elements.dmSendButton, event: 'click', handler: sendDmMessage },
-    { element: elements.dmSearchInput, event: 'input', handler: () => loadDms(elements.dmSearchInput.value.toLowerCase()) },
-]);
+elements.loginButton?.addEventListener('click', login);
+elements.logoutButton?.addEventListener('click', logout);
+elements.sendButton?.addEventListener('click', sendMessage);
+elements.saveSettingsButton?.addEventListener('click', saveSettings);
+elements.globalChatButton?.addEventListener('click', showGlobalChat);
+elements.dmsButton?.addEventListener('click', showDms);
+elements.dmSendButton?.addEventListener('click', sendDmMessage);
+elements.dmSearchInput?.addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    loadDms(query);
+});
 
 // Authentication state change handler
 auth.onAuthStateChanged(handleAuthStateChanged);
@@ -234,30 +234,6 @@ function filterProfanity(text) {
     return text.replace(regex, (match) => '*'.repeat(match.length));
 }
 
-function parseMessageText(text) {
-    const replacements = [
-        { regex: /\*\*(.*?)\*\*/g, replacement: '<strong>$1</strong>' },
-        { regex: /\*(.*?)\*/g, replacement: '<em>$1</em>' },
-        { regex: /__(.*?)__/g, replacement: '<u>$1</u>' },
-        { regex: /\|\|(.*?)\|\|/g, replacement: '<span class="spoiler">$1</span>' },
-        { regex: /\[re\](.*?)\[\/re\]/g, replacement: '<span class="text-red-500">$1</span>' },
-        { regex: /\[or\](.*?)\[\/or\]/g, replacement: '<span class="text-orange-500">$1</span>' },
-        { regex: /\[ye\](.*?)\[\/ye\]/g, replacement: '<span class="text-yellow-500">$1</span>' },
-        { regex: /\[gr\](.*?)\[\/gr\]/g, replacement: '<span class="text-green-500">$1</span>' },
-        { regex: /\[bl\](.*?)\[\/bl\]/g, replacement: '<span class="text-blue-500">$1</span>' },
-        { regex: /\[pu\](.*?)\[\/pu\]/g, replacement: '<span class="text-purple-500">$1</span>' },
-        { regex: /\[pi\](.*?)\[\/pi\]/g, replacement: '<span class="text-pink-500">$1</span>' },
-        { regex: /\[ra\](.*?)\[\/ra\]/g, replacement: '<span style="background-image: linear-gradient(to right, #EF476F, #FFAE66, #FFD166, #06D6A0, #118AB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$1</span>' },
-        { regex: /\[us\](.*?)\[\/us\]/g, replacement: '<span style="background-image: linear-gradient(to right, #FF334F, #DEE1F3, #3471E3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$1</span>' }
-    ];
-
-    replacements.forEach(({ regex, replacement }) => {
-        text = text.replace(regex, replacement);
-    });
-
-    return text;
-}
-
 function sendMessage() {
     const messageText = parseMessageText(elements.chatInput.value.trim());
     if (messageText.length > MESSAGE_LIMIT) {
@@ -283,6 +259,91 @@ function sendMessage() {
             elements.chatInput.value = '';
         }).catch(console.error);
     }
+}
+
+function parseMessageText(text) {
+    const replacements = [
+        { regex: /\*\*(.*?)\*\*/g, replacement: '<strong>$1</strong>' },
+        { regex: /\*(.*?)\*/g, replacement: '<em>$1</em>' },
+        { regex: /__(.*?)__/g, replacement: '<u>$1</u>' },
+        { regex: /\|\|(.*?)\|\|/g, replacement: '<span class="spoiler">$1</span>' },
+        { regex: /\[re\](.*?)\[\/re\]/g, replacement: '<span class="text-red-500">$1</span>' },
+        { regex: /\[or\](.*?)\[\/or\]/g, replacement: '<span class="text-orange-500">$1</span>' },
+        { regex: /\[ye\](.*?)\[\/ye\]/g, replacement: '<span class="text-yellow-500">$1</span>' },
+        { regex: /\[gr\](.*?)\[\/gr\]/g, replacement: '<span class="text-green-500">$1</span>' },
+        { regex: /\[bl\](.*?)\[\/bl\]/g, replacement: '<span class="text-blue-500">$1</span>' },
+        { regex: /\[pu\](.*?)\[\/pu\]/g, replacement: '<span class="text-purple-500">$1</span>' },
+        { regex: /\[pi\](.*?)\[\/pi\]/g, replacement: '<span class="text-pink-500">$1</span>' },
+        { regex: /\[ra\](.*?)\[\/ra\]/g, replacement: '<span style="background-image: linear-gradient(to right, #EF476F, #FFAE66, #FFD166, #06D6A0, #118AB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$1</span>' },
+        { regex: /\[us\](.*?)\[\/us\]/g, replacement: '<span style="background-image: linear-gradient(to right, #FF334F, #DEE1F3, #3471E3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$1</span>' }
+    ];
+
+    replacements.forEach(({ regex, replacement }) => {
+        text = text.replace(regex, replacement);
+    });
+
+    return text;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    function insertFormat(format) {
+        const chatInput = elements.chatInput;
+        const startPos = chatInput.selectionStart;
+        const endPos = chatInput.selectionEnd;
+        const textBefore = chatInput.value.substring(0, startPos);
+        const textAfter = chatInput.value.substring(endPos, chatInput.value.length);
+        chatInput.value = `${textBefore}${format}${textAfter}`;
+        chatInput.focus();
+        chatInput.setSelectionRange(startPos + format.indexOf('TEXT'), startPos + format.indexOf('TEXT') + 4);
+    }
+
+    document.querySelectorAll('.format-example').forEach(item => {
+        item.addEventListener('click', event => {
+            const format = event.target.closest('.format-example').getAttribute('data-format');
+            insertFormat(format);
+        });
+    });
+});
+
+function loadMessages() {
+    db.collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
+        elements.chatBox.innerHTML = '';
+        snapshot.forEach(doc => {
+            const message = doc.data();
+            elements.chatBox.appendChild(createMessageElement(message));
+        });
+        addUsernameClickListeners();
+        elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
+    });
+}
+
+function createMessageElement(message) {
+    const timestamp = new Date(message.timestamp.seconds * 1000);
+    const timeString = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })} - ${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
+
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('list-group-item', 'px-0', 'position-relative', 'hstack', 'flex-wrap', 'chat-message');
+    messageElement.innerHTML = `
+        <div class="flex-1">
+            <div class="d-flex align-items-center mb-1">
+                <a href="#" class="d-block h6 chat-username" data-uid="${message.uid}">${message.name}</a>
+                <span class="text-muted text-xs ms-2">${timeString}</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="w-3/4 text-sm text-muted me-auto">${message.text}</div>
+            </div>
+        </div>
+    `;
+    return messageElement;
+}
+
+function addUsernameClickListeners() {
+    document.querySelectorAll('.chat-username').forEach(item => {
+        item.addEventListener('click', event => {
+            const uid = event.target.getAttribute('data-uid');
+            showProfileModal(uid);
+        });
+    });
 }
 
 // DM functions
@@ -324,47 +385,6 @@ function sendDmMessage() {
 
 function createDmId(uid1, uid2) {
     return [uid1, uid2].sort().join('_');
-}
-
-function loadMessages() {
-    db.collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
-        elements.chatBox.innerHTML = '';
-        snapshot.forEach(doc => {
-            const message = doc.data();
-            elements.chatBox.appendChild(createMessageElement(message));
-        });
-        addUsernameClickListeners();
-        elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
-    });
-}
-
-function createMessageElement(message) {
-    const timestamp = new Date(message.timestamp.seconds * 1000);
-    const timeString = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })} - ${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
-
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('list-group-item', 'px-0', 'position-relative', 'hstack', 'flex-wrap', 'chat-message');
-    messageElement.innerHTML = `
-        <div class="flex-1">
-            <div class="d-flex align-items-center mb-1">
-                <a href="#" class="d-block h6 chat-username" data-uid="${message.uid}">${message.name}</a>
-                <span class="text-muted text-xs ms-2">${timeString}</span>
-            </div>
-            <div class="d-flex align-items-center">
-                <div class="w-3/4 text-sm text-muted me-auto">${message.text}</div>
-            </div>
-        </div>
-    `;
-    return messageElement;
-}
-
-function addUsernameClickListeners() {
-    document.querySelectorAll('.chat-username').forEach(item => {
-        item.addEventListener('click', event => {
-            const uid = event.target.getAttribute('data-uid');
-            showProfileModal(uid);
-        });
-    });
 }
 
 function loadDms(searchQuery = '') {
@@ -481,26 +501,15 @@ function hideModal(modalId) {
     modalInstance.hide();
 }
 
-// Helper functions
-function addEventListeners(eventList) {
-    eventList.forEach(({ element, event, handler }) => {
-        if (element) {
-            element.addEventListener(event, handler);
-        }
-    });
-}
-
 // Initialization
 function init() {
-    addEventListeners([
-        { element: elements.loginButton, event: 'click', handler: login },
-        { element: elements.logoutButton, event: 'click', handler: logout },
-        { element: elements.sendButton, event: 'click', handler: sendMessage },
-        { element: elements.saveSettingsButton, event: 'click', handler: saveSettings },
-        { element: elements.globalChatButton, event: 'click', handler: showGlobalChat },
-        { element: elements.dmsButton, event: 'click', handler: showDms },
-        { element: elements.dmSendButton, event: 'click', handler: sendDmMessage },
-    ]);
+    elements.loginButton.addEventListener('click', login);
+    elements.logoutButton.addEventListener('click', logout);
+    elements.sendButton.addEventListener('click', sendMessage);
+    elements.saveSettingsButton.addEventListener('click', saveSettings);
+    elements.globalChatButton.addEventListener('click', showGlobalChat);
+    elements.dmsButton.addEventListener('click', showDms);
+    elements.dmSendButton.addEventListener('click', sendDmMessage);
     auth.onAuthStateChanged(handleAuthStateChanged);
 }
 
