@@ -51,6 +51,7 @@ const NoNoWords = ['badword1', 'badword2', 'badword3'];
 const MESSAGE_LIMIT = 5000;
 const RATE_LIMIT = 5; // Number of messages allowed per TIME_FRAME
 const TIME_FRAME = 60000; // MS
+const messageTimestamps = {};
 
 // Variables
 let currentDmUserId = null;
