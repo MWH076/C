@@ -44,9 +44,13 @@ const elements = {
     dmSearchInput: document.getElementById('dm-search-input'),
 };
 
+// Arrays
+const NoNoWords = ['badword1', 'badword2', 'badword3'];
+
 // Constants
 const MESSAGE_LIMIT = 5000;
-const PROFILE_MODAL_ID = 'profile_modal';
+const RATE_LIMIT = 5; // Number of messages allowed per TIME_FRAME
+const TIME_FRAME = 60000; // MS
 
 // Variables
 let currentDmUserId = null;
@@ -206,6 +210,28 @@ function showDms() {
 }
 
 // Message functions
+function canSendMessage(uid) {
+    const now = Date.now();
+    if (!messageTimestamps[uid]) {
+        messageTimestamps[uid] = [];
+    }
+    const timestamps = messageTimestamps[uid];
+    while (timestamps.length && now - timestamps[0] > TIME_FRAME) {
+        timestamps.shift();
+    }
+    if (timestamps.length < RATE_LIMIT) {
+        timestamps.push(now);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function filterProfanity(text) {
+    const regex = new RegExp(NoNoWords.join('|'), 'gi');
+    return text.replace(regex, (match) => '*'.repeat(match.length));
+}
+
 function sendMessage() {
     const messageText = parseMessageText(elements.chatInput.value.trim());
     if (messageText.length > MESSAGE_LIMIT) {
@@ -213,9 +239,16 @@ function sendMessage() {
         return;
     }
     if (messageText) {
+        const uid = auth.currentUser.uid;
+        if (!canSendMessage(uid)) {
+            alert("You are sending messages too quickly. Please slow down.");
+            return;
+        }
+
+        const cleanMessage = filterProfanity(messageText);
         db.collection('messages').add({
-            text: messageText,
-            uid: auth.currentUser.uid,
+            text: cleanMessage,
+            uid: uid,
             name: auth.currentUser.displayName,
             timestamp: firebase.firestore.Timestamp.now()
         }).then(() => {
@@ -317,22 +350,22 @@ function sendDmMessage() {
         return;
     }
     if (messageText && currentDmUserId) {
-        const currentUser = auth.currentUser.uid;
-
-        if (currentUser === currentDmUserId) {
-            alert("You cannot send messages to yourself.");
+        const uid = auth.currentUser.uid;
+        if (!canSendMessage(uid)) {
+            alert("You are sending messages too quickly. Please slow down.");
             return;
         }
 
-        const dmId = createDmId(currentUser, currentDmUserId);
+        const cleanMessage = filterProfanity(messageText);
+        const dmId = createDmId(uid, currentDmUserId);
 
         db.collection('dms').doc(dmId).set({
-            participants: [currentUser, currentDmUserId]
+            participants: [uid, currentDmUserId]
         }, { merge: true });
 
         db.collection('dms').doc(dmId).collection('messages').add({
-            text: messageText,
-            uid: currentUser,
+            text: cleanMessage,
+            uid: uid,
             name: auth.currentUser.displayName,
             timestamp: firebase.firestore.Timestamp.now()
         }).then(() => {
