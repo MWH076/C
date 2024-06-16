@@ -103,9 +103,7 @@ function setupUser(user) {
                 displayName: user.displayName,
                 bio: "",
                 location: "",
-                badges: ["User"],
-                friendlinessScore: 0,
-                totalVotes: 0
+                badges: ["User"]
             }, { merge: true });
         }
     }).catch(console.error);
@@ -143,9 +141,6 @@ function loadProfile() {
             elements.newDisplayName.value = displayName;
             elements.newBio.value = userData.bio || '';
             elements.newLocation.value = userData.location || '';
-            const scorePercentage = userData.totalVotes ? Math.round((userData.friendlinessScore / userData.totalVotes) * 100) : 0;
-            document.getElementById('profile-friendliness-score').innerText = `Username's score: ${scorePercentage}%`;
-            document.getElementById('profile-total-votes').innerText = `Total votes: ${userData.totalVotes || 0}`;
         } else {
             console.log("No such user document!");
         }
@@ -153,7 +148,6 @@ function loadProfile() {
 }
 
 function showProfileModal(uid) {
-    currentDmUserId = uid;
     const userRef = db.collection('users').doc(uid);
 
     userRef.get().then(doc => {
@@ -163,8 +157,6 @@ function showProfileModal(uid) {
             document.getElementById('profile-bio').innerText = userData.bio || 'Bio pending approval from my cat. Meow back later!';
             document.getElementById('profile-location').innerText = userData.location || 'No location yet, exploring Earth!';
             document.getElementById('profile-badges').innerHTML = userData.badges.map(createBadge).join(' ');
-            document.getElementById('profile-friendliness-score').innerText = `Username's score: ${userData.friendlinessScore || 0}`;
-            document.getElementById('profile-total-votes').innerText = `Total votes: ${userData.totalVotes || 0}`;
 
             openModal(PROFILE_MODAL_ID);
 
@@ -200,82 +192,6 @@ function createBadge(badge) {
     const badgeClass = badgeClasses[badgeName];
 
     return `<span class="badge ${badgeClass}" data-toggle="tooltip" data-placement="top" title="${badgeName}"><i class="ph ${badgeClass}"></i></span>`;
-}
-
-function voteFriendliness(isUpvote) {
-    if (!currentDmUserId) {
-        console.error("currentDmUserId is not set. Cannot vote.");
-        return;
-    }
-
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-        alert("You must be logged in to vote.");
-        return;
-    }
-
-    const userRef = db.collection('users').doc(currentDmUserId);
-    const voteRef = userRef.collection('votes').doc(currentUser.uid);
-
-    voteRef.get().then(doc => {
-        if (doc.exists) {
-            alert("You have already voted for this user.");
-        } else {
-            userRef.get().then(userDoc => {
-                if (userDoc.exists) {
-                    const userData = userDoc.data();
-                    let newScore = userData.friendlinessScore || 0;
-                    let newTotalVotes = userData.totalVotes || 0;
-
-                    if (isUpvote) {
-                        newScore++;
-                    } else {
-                        newScore--;
-                    }
-
-                    newTotalVotes++;
-                    if (newScore < 0) newScore = 0;
-
-                    // Update the vote document
-                    voteRef.set({
-                        vote: isUpvote ? 1 : -1,
-                        timestamp: firebase.firestore.Timestamp.now()
-                    }).then(() => {
-                        // Update the user document
-                        userRef.update({
-                            friendlinessScore: newScore,
-                            totalVotes: newTotalVotes
-                        }).then(() => {
-                            loadProfile(currentDmUserId); // Pass the correct user ID to load the profile
-                            highlightVote(isUpvote);
-                        }).catch(error => {
-                            console.error("Error updating user document:", error);
-                        });
-                    }).catch(error => {
-                        console.error("Error setting vote document:", error);
-                    });
-                } else {
-                    console.error("No such user document!");
-                }
-            }).catch(error => {
-                console.error("Error fetching user document:", error);
-            });
-        }
-    }).catch(error => {
-        console.error("Error fetching vote document:", error);
-    });
-}
-
-function highlightVote(isUpvote) {
-    document.querySelectorAll('.btn-group .btn').forEach(button => {
-        button.classList.remove('active');
-    });
-
-    if (isUpvote) {
-        document.querySelector('.btn-group .btn-neutral[data-vote="up"]').classList.add('active');
-    } else {
-        document.querySelector('.btn-group .btn-neutral[data-vote="down"]').classList.add('active');
-    }
 }
 
 // Navigation functions
