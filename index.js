@@ -185,7 +185,7 @@ function createBadge(badge) {
         'Supporter2': 'bg-purple-500 ph-crown-simple',
         'Supporter1': 'bg-indigo-500 ph-heart',
         'Veteran': 'bg-orange-500 ph-star',
-        'User': 'bg-gray-700 ph-user-check'
+        'User': 'bg-gray-700 ph-user'
     };
 
     const badgeName = badge;
