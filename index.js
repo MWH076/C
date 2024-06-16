@@ -179,13 +179,13 @@ function handleProfileDmButtonClick(uid) {
 
 function createBadge(badge) {
     const badgeClasses = {
-        'Administrator': 'bg-red-500 ph-shield-star',
-        'Moderator': 'bg-pink-500 ph-gavel',
-        'Supporter3': 'bg-blue-500 ph-diamond',
-        'Supporter2': 'bg-purple-500 ph-crown-simple',
-        'Supporter1': 'bg-indigo-500 ph-heart',
-        'Veteran': 'bg-orange-500 ph-star',
-        'User': 'bg-gray-700 ph-user'
+        'Administrator': 'bg-red-500 ph-shield-star', /* People with access to respository, firebase, etc. */
+        'Moderator': 'bg-pink-500 ph-gavel', /* People who ensure the community stays safe and welcoming */
+        'Supporter3': 'bg-blue-500 ph-diamond', /* 100+ USD Spent twords project */
+        'Supporter2': 'bg-purple-500 ph-crown-simple', /* 20-100 USD Spent twords project */
+        'Supporter1': 'bg-indigo-500 ph-heart', /* 1-20 USD Spent twords project */
+        'Veteran': 'bg-orange-500 ph-star', /* Users with an account within first few X time when application released */
+        'User': 'bg-gray-700 ph-user' /* All users */
     };
 
     const badgeName = badge;
