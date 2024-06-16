@@ -3,12 +3,7 @@
     Unauthorized editing, removal, updating, adding, duplicating, selling, or reusing of this code is strictly prohibited.
 */
 
-#chat-box {
-    max-height: 340px;
-    overflow-y: auto;
-}
-
-#dm-chat-box {
+#chat-box, #dm-chat-box {
     max-height: 340px;
     overflow-y: auto;
 }
