@@ -308,7 +308,7 @@ function createMessageElement(message, messageId, isDm = false) {
                             <i class="ph ph-toolbox"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a href="#!" class="dropdown-item" onclick="editMessage('${messageId}', '${message.text}', ${isDm})">Edit</a>
+                            <a href="#!" class="dropdown-item" onclick="editMessage('${messageId}', ${isDm})">Edit</a>
                             <a href="#!" class="dropdown-item" onclick="deleteMessage('${messageId}', ${isDm})">Delete</a>
                         </div>
                     </div>
@@ -331,13 +331,15 @@ function deleteMessage(messageId, isDm = false) {
     }).catch(console.error);
 }
 
-function editMessage(messageId, currentText, isDm = false) {
+function editMessage(messageId, isDm = false) {
+    const messageElement = document.getElementById(`message-text-${messageId}`);
+    const currentText = messageElement.innerText;
     let newText = prompt("Edit your message:", currentText);
     if (newText !== null && newText.trim() !== '') {
         const collection = isDm ? 'dms' : 'messages';
         const dmId = isDm ? createDmId(auth.currentUser.uid, currentDmUserId) : null;
         const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
-
+        
         docRef.update({
             text: newText.trim(),
             isEdited: true
