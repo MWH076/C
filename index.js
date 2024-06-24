@@ -273,14 +273,15 @@ function loadMessages() {
         elements.chatBox.innerHTML = '';
         snapshot.forEach(doc => {
             const message = doc.data();
-            elements.chatBox.appendChild(createMessageElement(message));
+            const messageElement = createMessageElement(message, doc.id);
+            elements.chatBox.appendChild(messageElement);
         });
         addUsernameClickListeners();
         elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
     });
 }
 
-function createMessageElement(message) {
+function createMessageElement(message, messageId) {
     const timestamp = new Date(message.timestamp.seconds * 1000);
     const timeString = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })} - ${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
 
@@ -293,11 +294,30 @@ function createMessageElement(message) {
                 <span class="text-muted text-xs ms-2">${timeString}</span>
             </div>
             <div class="d-flex align-items-center">
-                <div class="w-3/4 text-sm text-muted me-auto">${message.text}</div>
+                <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${message.text}</div>
+                ${auth.currentUser && auth.currentUser.uid === message.uid ? `
+                    <button class="btn btn-sm btn-link" onclick="editMessage('${messageId}', '${message.text}')">Edit</button>
+                    <button class="btn btn-sm btn-link" onclick="deleteMessage('${messageId}')">Delete</button>
+                ` : ''}
             </div>
         </div>
     `;
     return messageElement;
+}
+
+function deleteMessage(messageId) {
+    db.collection('messages').doc(messageId).update({
+        text: '*Message deleted*'
+    }).catch(console.error);
+}
+
+function editMessage(messageId, currentText) {
+    const newText = prompt("Edit your message:", currentText);
+    if (newText !== null && newText.trim() !== '') {
+        db.collection('messages').doc(messageId).update({
+            text: newText.trim() + ' <em>*Edited*</em>'
+        }).catch(console.error);
+    }
 }
 
 function addUsernameClickListeners() {
@@ -472,6 +492,16 @@ function init() {
     elements.dmsButton.addEventListener('click', showDms);
     elements.dmSendButton.addEventListener('click', sendDmMessage);
     auth.onAuthStateChanged(handleAuthStateChanged);
+    document.addEventListener('click', function (event) {
+        if (event.target.matches('.edit-button')) {
+            const messageId = event.target.dataset.messageId;
+            const messageText = document.getElementById(`message-text-${messageId}`).innerText;
+            editMessage(messageId, messageText);
+        } else if (event.target.matches('.delete-button')) {
+            const messageId = event.target.dataset.messageId;
+            deleteMessage(messageId);
+        }
+    });
 }
 
 // Run initialization
