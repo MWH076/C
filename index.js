@@ -471,24 +471,47 @@ function saveSettings() {
     });
 }
 
+function updateMessageNames(uid, newName) {
+    const batch = db.batch();
+    
+    const globalMessagesPromise = db.collection('messages').where('uid', '==', uid).get().then(snapshot => {
+        snapshot.forEach(doc => {
+            batch.update(doc.ref, { name: newName });
+        });
+    });
+
+    const dmMessagesPromise = db.collection('dms').where('participants', 'array-contains', uid).get().then(snapshot => {
+        const updatePromises = [];
+
+        snapshot.forEach(dmDoc => {
+            const dmId = dmDoc.id;
+            const messagesRef = db.collection('dms').doc(dmId).collection('messages');
+            
+            const updatePromise = messagesRef.where('uid', '==', uid).get().then(messagesSnapshot => {
+                messagesSnapshot.forEach(messageDoc => {
+                    batch.update(messageDoc.ref, { name: newName });
+                });
+            });
+            
+            updatePromises.push(updatePromise);
+        });
+
+        return Promise.all(updatePromises);
+    });
+
+    Promise.all([globalMessagesPromise, dmMessagesPromise]).then(() => {
+        return batch.commit();
+    }).then(() => {
+        loadProfile();
+        hideModal('modal_example');
+    }).catch(console.error);
+}
+
 function updateUserProfile(user, updates) {
     user.updateProfile({ displayName: updates.displayName }).then(() => {
         return db.collection('users').doc(user.uid).set(updates, { merge: true });
     }).then(() => {
         updateMessageNames(user.uid, updates.displayName);
-    }).catch(console.error);
-}
-
-function updateMessageNames(uid, newName) {
-    db.collection('messages').where('uid', '==', uid).get().then(snapshot => {
-        const batch = db.batch();
-        snapshot.forEach(doc => {
-            batch.update(doc.ref, { name: newName });
-        });
-        return batch.commit();
-    }).then(() => {
-        loadProfile();
-        hideModal('modal_example');
     }).catch(console.error);
 }
 
