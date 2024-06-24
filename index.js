@@ -273,7 +273,7 @@ function loadMessages() {
         elements.chatBox.innerHTML = '';
         snapshot.forEach(doc => {
             const message = doc.data();
-            const messageElement = createMessageElement(message, doc.id);
+            const messageElement = createMessageElement(message, doc.id, false);
             elements.chatBox.appendChild(messageElement);
         });
         addUsernameClickListeners();
@@ -281,7 +281,7 @@ function loadMessages() {
     });
 }
 
-function createMessageElement(message, messageId) {
+function createMessageElement(message, messageId, isDm = false) {
     const timestamp = new Date(message.timestamp.seconds * 1000);
     const timeString = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })} - ${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
 
@@ -302,8 +302,8 @@ function createMessageElement(message, messageId) {
             <div class="d-flex align-items-center">
                 <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
                 ${auth.currentUser && auth.currentUser.uid === message.uid && !message.isDeleted ? `
-                    <button class="btn btn-sm btn-link" onclick="editMessage('${messageId}', '${message.text}')">Edit</button>
-                    <button class="btn btn-sm btn-link" onclick="deleteMessage('${messageId}')">Delete</button>
+                    <button class="btn btn-sm btn-link" onclick="editMessage('${messageId}', '${message.text}', ${isDm})">Edit</button>
+                    <button class="btn btn-sm btn-link" onclick="deleteMessage('${messageId}', ${isDm})">Delete</button>
                 ` : ''}
             </div>
         </div>
@@ -311,17 +311,25 @@ function createMessageElement(message, messageId) {
     return messageElement;
 }
 
-function deleteMessage(messageId) {
-    db.collection('messages').doc(messageId).update({
+function deleteMessage(messageId, isDm = false) {
+    const collection = isDm ? 'dms' : 'messages';
+    const dmId = isDm ? createDmId(auth.currentUser.uid, currentDmUserId) : null;
+    const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
+    
+    docRef.update({
         text: '',
         isDeleted: true
     }).catch(console.error);
 }
 
-function editMessage(messageId, currentText) {
+function editMessage(messageId, currentText, isDm = false) {
     let newText = prompt("Edit your message:", currentText);
     if (newText !== null && newText.trim() !== '') {
-        db.collection('messages').doc(messageId).update({
+        const collection = isDm ? 'dms' : 'messages';
+        const dmId = isDm ? createDmId(auth.currentUser.uid, currentDmUserId) : null;
+        const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
+        
+        docRef.update({
             text: newText.trim(),
             isEdited: true
         }).catch(console.error);
@@ -439,7 +447,7 @@ function loadDmMessages(uid) {
         elements.dmChatBox.innerHTML = '';
         snapshot.forEach(doc => {
             const message = doc.data();
-            elements.dmChatBox.appendChild(createMessageElement(message));
+            elements.dmChatBox.appendChild(createMessageElement(message, doc.id, true));
         });
         elements.dmChatBox.scrollTop = elements.dmChatBox.scrollHeight;
     });
@@ -504,10 +512,12 @@ function init() {
         if (event.target.matches('.edit-button')) {
             const messageId = event.target.dataset.messageId;
             const messageText = document.getElementById(`message-text-${messageId}`).innerText;
-            editMessage(messageId, messageText);
+            const isDm = event.target.dataset.isDm === 'true';
+            editMessage(messageId, messageText, isDm);
         } else if (event.target.matches('.delete-button')) {
             const messageId = event.target.dataset.messageId;
-            deleteMessage(messageId);
+            const isDm = event.target.dataset.isDm === 'true';
+            deleteMessage(messageId, isDm);
         }
     });
 }
