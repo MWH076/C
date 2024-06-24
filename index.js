@@ -141,6 +141,7 @@ function loadProfile() {
             elements.newDisplayName.value = displayName;
             elements.newBio.value = userData.bio || '';
             elements.newLocation.value = userData.location || '';
+            document.getElementById('profile-banner-url').value = userData.bannerUrl || '';
         } else {
             console.log("No such user document!");
         }
@@ -157,6 +158,13 @@ function showProfileModal(uid) {
             document.getElementById('profile-bio').innerText = userData.bio || 'Bio pending approval from my cat. Meow back later!';
             document.getElementById('profile-location').innerText = userData.location || 'No location yet, exploring Earth!';
             document.getElementById('profile-badges').innerHTML = userData.badges.map(createBadge).join(' ');
+
+            const bannerImg = document.createElement('img');
+            bannerImg.src = userData.bannerUrl || 'https://cdn.pfps.gg/banners/7461-car-gif.gif';
+            bannerImg.classList.add('rounded', 'w-full', 'mb-3');
+            const bannerContainer = document.querySelector('.modal-body > .mb-3');
+            bannerContainer.innerHTML = '';
+            bannerContainer.appendChild(bannerImg);
 
             openModal(PROFILE_MODAL_ID);
 
@@ -469,7 +477,12 @@ function saveSettings() {
     const newName = elements.newDisplayName.value;
     const newBio = elements.newBio.value;
     const newLocation = elements.newLocation.value;
+    const newBannerUrl = document.getElementById('profile-banner-url').value;
     const user = auth.currentUser;
+
+    if (!newBannerUrl.startsWith('https://pfps.gg/banners/')) {
+        return;
+    }
 
     db.collection('users').where('displayName', '==', newName).get().then(snapshot => {
         if (!snapshot.empty && snapshot.docs[0].id !== user.uid) {
@@ -477,7 +490,7 @@ function saveSettings() {
             return;
         }
 
-        const updates = { displayName: newName, bio: newBio, location: newLocation };
+        const updates = { displayName: newName, bio: newBio, location: newLocation, bannerUrl: newBannerUrl };
         updateUserProfile(user, updates);
     });
 }
