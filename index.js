@@ -302,8 +302,17 @@ function createMessageElement(message, messageId, isDm = false) {
             <div class="d-flex align-items-center">
                 <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
                 ${auth.currentUser && auth.currentUser.uid === message.uid && !message.isDeleted ? `
-                    <button class="btn btn-sm btn-link" onclick="editMessage('${messageId}', '${message.text}', ${isDm})">Edit</button>
-                    <button class="btn btn-sm btn-link" onclick="deleteMessage('${messageId}', ${isDm})">Delete</button>
+                <div class="ms-auto text-end">
+                    <div class="dropdown">
+                        <a class="text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a href="#!" class="dropdown-item" onclick="editMessage('${messageId}', '${message.text}', ${isDm})">Edit</a>
+                            <a href="#!" class="dropdown-item" onclick="deleteMessage('${messageId}', ${isDm})">Delete</a>
+                        </div>
+                    </div>
+                </div>
                 ` : ''}
             </div>
         </div>
@@ -315,7 +324,7 @@ function deleteMessage(messageId, isDm = false) {
     const collection = isDm ? 'dms' : 'messages';
     const dmId = isDm ? createDmId(auth.currentUser.uid, currentDmUserId) : null;
     const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
-    
+
     docRef.update({
         text: '',
         isDeleted: true
@@ -328,7 +337,7 @@ function editMessage(messageId, currentText, isDm = false) {
         const collection = isDm ? 'dms' : 'messages';
         const dmId = isDm ? createDmId(auth.currentUser.uid, currentDmUserId) : null;
         const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
-        
+
         docRef.update({
             text: newText.trim(),
             isEdited: true
@@ -473,7 +482,7 @@ function saveSettings() {
 
 function updateMessageNames(uid, newName) {
     const batch = db.batch();
-    
+
     const globalMessagesPromise = db.collection('messages').where('uid', '==', uid).get().then(snapshot => {
         snapshot.forEach(doc => {
             batch.update(doc.ref, { name: newName });
@@ -486,13 +495,13 @@ function updateMessageNames(uid, newName) {
         snapshot.forEach(dmDoc => {
             const dmId = dmDoc.id;
             const messagesRef = db.collection('dms').doc(dmId).collection('messages');
-            
+
             const updatePromise = messagesRef.where('uid', '==', uid).get().then(messagesSnapshot => {
                 messagesSnapshot.forEach(messageDoc => {
                     batch.update(messageDoc.ref, { name: newName });
                 });
             });
-            
+
             updatePromises.push(updatePromise);
         });
 
