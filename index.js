@@ -483,7 +483,7 @@ function hideModal(modalId) {
 }
 
 // Initialization
-function init() {
+function init() { 
     elements.loginButton.addEventListener('click', login);
     elements.logoutButton.addEventListener('click', logout);
     elements.sendButton.addEventListener('click', sendMessage);
