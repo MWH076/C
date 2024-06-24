@@ -287,15 +287,21 @@ function createMessageElement(message, messageId) {
 
     const messageElement = document.createElement('div');
     messageElement.classList.add('list-group-item', 'px-0', 'position-relative', 'hstack', 'flex-wrap', 'chat-message');
+    let messageContent = message.text;
+    if (message.isDeleted) {
+        messageContent = '<em>Message deleted</em>';
+    }
+
     messageElement.innerHTML = `
         <div class="flex-1">
             <div class="d-flex align-items-center mb-1">
                 <a href="#" class="d-block h6 chat-username" data-uid="${message.uid}">${message.name}</a>
                 <span class="text-muted text-xs ms-2">${timeString}</span>
+                ${message.isEdited && !message.isDeleted ? '<span class="text-muted text-xs ms-2"><em>*Edited*</em></span>' : ''}
             </div>
             <div class="d-flex align-items-center">
-                <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${message.text}</div>
-                ${auth.currentUser && auth.currentUser.uid === message.uid ? `
+                <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
+                ${auth.currentUser && auth.currentUser.uid === message.uid && !message.isDeleted ? `
                     <button class="btn btn-sm btn-link" onclick="editMessage('${messageId}', '${message.text}')">Edit</button>
                     <button class="btn btn-sm btn-link" onclick="deleteMessage('${messageId}')">Delete</button>
                 ` : ''}
@@ -307,15 +313,17 @@ function createMessageElement(message, messageId) {
 
 function deleteMessage(messageId) {
     db.collection('messages').doc(messageId).update({
-        text: '*Message deleted*'
+        text: '',
+        isDeleted: true
     }).catch(console.error);
 }
 
 function editMessage(messageId, currentText) {
-    const newText = prompt("Edit your message:", currentText);
+    let newText = prompt("Edit your message:", currentText);
     if (newText !== null && newText.trim() !== '') {
         db.collection('messages').doc(messageId).update({
-            text: newText.trim() + ' <em>*Edited*</em>'
+            text: newText.trim(),
+            isEdited: true
         }).catch(console.error);
     }
 }
@@ -483,7 +491,7 @@ function hideModal(modalId) {
 }
 
 // Initialization
-function init() { 
+function init() {
     elements.loginButton.addEventListener('click', login);
     elements.logoutButton.addEventListener('click', logout);
     elements.sendButton.addEventListener('click', sendMessage);
