@@ -116,15 +116,15 @@ function toggleVisibility(element, show) {
     }
 }
 
-function openModal(modalId) {
-    const modal = new bootstrap.Modal(document.getElementById(modalId));
-    modal.show();
+function openOffcanvas(offcanvasId) {
+    const offcanvas = new bootstrap.Offcanvas(document.getElementById(offcanvasId));
+    offcanvas.show();
 }
 
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    const modalInstance = bootstrap.Modal.getInstance(modal);
-    modalInstance.hide();
+function closeOffcanvas(offcanvasId) {
+    const offcanvas = document.getElementById(offcanvasId);
+    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvas);
+    offcanvasInstance.hide();
 }
 
 function loadProfile() {
@@ -158,11 +158,11 @@ function showProfileModal(uid) {
             document.getElementById('profile-location').innerText = userData.location || 'No location yet, exploring Earth!';
             document.getElementById('profile-badges').innerHTML = userData.badges.map(createBadge).join(' ');
 
-            openModal(PROFILE_MODAL_ID);
+            openOffcanvas(PROFILE_MODAL_ID);
 
             document.getElementById('dm-button').addEventListener('click', () => {
                 handleProfileDmButtonClick(uid);
-                closeModal(PROFILE_MODAL_ID);
+                closeOffcanvas(PROFILE_MODAL_ID);
             });
         } else {
             console.error("No such user!");
@@ -174,7 +174,7 @@ function showProfileModal(uid) {
 
 function handleProfileDmButtonClick(uid) {
     startDm(uid);
-    closeModal(PROFILE_MODAL_ID);
+    closeOffcanvas(PROFILE_MODAL_ID);
 }
 
 function createBadge(badge) {
