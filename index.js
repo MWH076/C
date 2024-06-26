@@ -53,6 +53,21 @@ const PROFILE_MODAL_ID = 'profile_modal';
 // Variables
 let currentDmUserId = null;
 
+// Utility function to debounce
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
+elements.dmSearchInput?.addEventListener('input', debounce(function () {
+    const query = this.value.toLowerCase();
+    loadDms(query);
+}, 300));
+
 // Event listeners
 elements.loginButton?.addEventListener('click', login);
 elements.logoutButton?.addEventListener('click', logout);
