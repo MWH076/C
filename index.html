@@ -191,368 +191,358 @@
         </div>
     </main>
 
-    <div class="modal" id="modal_example" tabindex="-1" aria-labelledby="modal_example" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-3">
-                <div class="modal-header">
-                    <h5 class="modal-title">Settings</h5>
-                    <div class="text-xs ms-auto">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <form>
-                            <div class="card mb-3">
+    <div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
+        id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" aria-modal="true" role="dialog">
+        <div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Settings</h5>
+            <button type="button" class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body vstack gap-5">
+            <div>
+                <form>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="mb-5">
+                                <div>
+                                    <label class="form-label">
+                                        Change Username
+                                    </label>
+                                    <input type="text" class="form-control" id="new-display-name" minlength="3"
+                                        maxlength="30">
+                                </div>
+                            </div>
+                            <div class="card bg-dark border-0 shadow-none ml-md-4">
                                 <div class="card-body">
-                                    <div class="mb-5">
-                                        <div>
-                                            <label class="form-label">
-                                                Change Username
-                                            </label>
-                                            <input type="text" class="form-control" id="new-display-name" minlength="3"
-                                                maxlength="30">
-                                        </div>
+                                    <h5 class="text-white mb-2">Username guidelines</h5>
+                                    <ul class="text-blue-400 font-code pl-4 mb-0">
+                                        <li class="text-xs">Minimum 3 characters</li>
+                                        <li class="text-xs">Maximum 30 characters</li>
+                                        <li class="text-xs">Must be unqiue</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="card mb-3">
+                            <div class="card-body">
+                                <div class="mb-5">
+                                    <div>
+                                        <label class="form-label">
+                                            Change Banner
+                                        </label>
+                                        <input type="url" class="form-control" id="profile-banner-url" placeholder="https://pfps.gg/banners/your-banner.gif">
                                     </div>
-                                    <div class="card bg-dark border-0 shadow-none ml-md-4">
-                                        <div class="card-body">
-                                            <h5 class="text-white mb-2">Username guidelines</h5>
-                                            <ul class="text-blue-400 font-code pl-4 mb-0">
-                                                <li class="text-xs">Minimum 3 characters</li>
-                                                <li class="text-xs">Maximum 30 characters</li>
-                                                <li class="text-xs">Must be unqiue</li>
-                                            </ul>
-                                        </div>
+                                </div>
+                                <div class="card bg-dark border-0 shadow-none ml-md-4">
+                                    <div class="card-body">
+                                        <h5 class="text-white mb-2">Banner guidelines</h5>
+                                        <ul class="text-blue-400 font-code pl-4 mb-0">
+                                            <li class="text-xs">Must be from <a href="https://pfps.gg/banners/" target="_blank">pfps.gg/banners/</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
-                            <!--<div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="mb-5">
-                                        <div>
-                                            <label class="form-label">
-                                                Change Banner
-                                            </label>
-                                            <input type="url" class="form-control" id="profile-banner-url" placeholder="https://pfps.gg/banners/your-banner.gif">
-                                        </div>
-                                    </div>
-                                    <div class="card bg-dark border-0 shadow-none ml-md-4">
-                                        <div class="card-body">
-                                            <h5 class="text-white mb-2">Banner guidelines</h5>
-                                            <ul class="text-blue-400 font-code pl-4 mb-0">
-                                                <li class="text-xs">Must be from <a href="https://pfps.gg/banners/" target="_blank">pfps.gg/banners/</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>-->
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="mb-5">
-                                        <div>
-                                            <label class="form-label">
-                                                Change Bio
-                                            </label>
-                                            <textarea class="form-control"
-                                                placeholder="Make it short, make it sweet, make it yours!" id="new-bio"
-                                                rows="3" maxlength="500">
+                        </div>
+                    -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="mb-5">
+                                <div>
+                                    <label class="form-label">
+                                        Change Bio
+                                    </label>
+                                    <textarea class="form-control"
+                                        placeholder="Make it short, make it sweet, make it yours!" id="new-bio" rows="3"
+                                        maxlength="500">
                                             </textarea>
-                                        </div>
-                                    </div>
-                                    <div class="card bg-dark border-0 shadow-none ml-md-4">
-                                        <div class="card-body">
-                                            <h5 class="text-white mb-2">Bio guidelines</h5>
-                                            <ul class="text-blue-400 font-code pl-4 mb-0">
-                                                <li class="text-xs">Maximum 500 characters</li>
-                                            </ul>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="card">
+                            <div class="card bg-dark border-0 shadow-none ml-md-4">
                                 <div class="card-body">
-                                    <div class="mb-5">
-                                        <div>
-                                            <label class="form-label">
-                                                Change Location
-                                            </label>
-                                            <input type="text" class="form-control"
-                                                placeholder="In a cozy cave with WiFi!" id="new-location"
-                                                maxlength="50">
-                                        </div>
-                                    </div>
-                                    <div class="card bg-dark border-0 shadow-none ml-md-4">
-                                        <div class="card-body">
-                                            <h5 class="text-white mb-2">Location guidelines</h5>
-                                            <ul class="text-blue-400 font-code pl-4 mb-0">
-                                                <li class="text-xs">Maximum 50 characters</li>
-                                                <li class="text-xs">DON'T PUT YOUR ADDRESS!</li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <h5 class="text-white mb-2">Bio guidelines</h5>
+                                    <ul class="text-blue-400 font-code pl-4 mb-0">
+                                        <li class="text-xs">Maximum 500 characters</li>
+                                    </ul>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-sm btn-primary" id="save-settings-button">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="profile_modal" tabindex="-1" aria-labelledby="profile_modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-3">
-                <div class="modal-header">
-                    <h5 class="modal-title">User Profile</h5>
-                    <div class="text-xs ms-auto">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3"><img alt="..." class="rounded w-full"
-                            src="https://cdn.pfps.gg/banners/7461-car-gif.gif"></div>
-                    <header class="bg-surface-secondary rounded mb-3">
-                        <div class="container-fluid">
-                            <div class="row g-0">
-                                <div class="col ps-4 pt-4">
-                                    <h1 class="h2" id="profile-display-name">Username</h1>
-                                    <div class="d-flex gap-2 flex-wrap my-3">
-                                        <div id="profile-badges">Badges</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-                    <main class="py-6 bg-surface-secondary rounded">
-                        <div class="container-fluid max-w-screen-xl">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h5 class="mb-3">Biography</h5>
-                                    <p class="text-sm lh-relaxed" id="profile-bio">Bio</p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="mb-3">Location</h5>
-                                    <p class="text-sm lh-relaxed" id="profile-location">Location</p>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-sm btn-primary" id="dm-button">Send DM</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="format-help-modal" tabindex="-1" aria-labelledby="format-help-modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chat Formatting</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="card mb-3">
-                        <div class="card-header d-flex align-items-center">
-                            <h5 class="me-auto">Text Colors</h5>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-nowrap">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">Input</th>
-                                        <th scope="col">Output</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><span class="user-select-all">[pi]Your text[/pi]</span></td>
-                                        <td><span class="text-pink-500">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[pi]TEXT[/pi]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">[re]Your text[/re]</span></td>
-                                        <td><span class="text-red-500">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[re]TEXT[/re]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">[or]Your text[/or]</span></td>
-                                        <td><span class="text-orange-500">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[or]TEXT[/or]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">[ye]Your text[/ye]</span></td>
-                                        <td><span class="text-yellow-500">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[ye]TEXT[/ye]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">[gr]Your text[/gr]</span></td>
-                                        <td><span class="text-green-500">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[gr]TEXT[/gr]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">[bl]Your text[/bl]</span></td>
-                                        <td><span class="text-blue-500">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[bl]TEXT[/bl]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">[pu]Your text[/pu]</span></td>
-                                        <td><span class="text-purple-500">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[pu]TEXT[/pu]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card mb-3">
-                        <div class="card-header d-flex align-items-center">
-                            <h5 class="me-auto">Gradient Text Colors</h5>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-nowrap">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">Input</th>
-                                        <th scope="col">Output</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><span class="user-select-all">[ra]Your text[/ra]</span></td>
-                                        <td><span
-                                                style="background-image: linear-gradient(to right, #EF476F, #FFAE66, #FFD166, #06D6A0, #118AB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your
-                                                text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[ra]TEXT[/ra]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">[us]Your text[/us]</span></td>
-                                        <td><span
-                                                style="background-image: linear-gradient(to right, #FF334F, #DEE1F3, #3471E3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your
-                                                text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="[us]TEXT[/us]"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-header d-flex align-items-center">
-                            <h5 class="me-auto">Text Styles</h5>
+                        <div class="card-body">
+                            <div class="mb-5">
+                                <div>
+                                    <label class="form-label">
+                                        Change Location
+                                    </label>
+                                    <input type="text" class="form-control" placeholder="In a cozy cave with WiFi!"
+                                        id="new-location" maxlength="50">
+                                </div>
+                            </div>
+                            <div class="card bg-dark border-0 shadow-none ml-md-4">
+                                <div class="card-body">
+                                    <h5 class="text-white mb-2">Location guidelines</h5>
+                                    <ul class="text-blue-400 font-code pl-4 mb-0">
+                                        <li class="text-xs">Maximum 50 characters</li>
+                                        <li class="text-xs">DON'T PUT YOUR ADDRESS!</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-nowrap">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">Input</th>
-                                        <th scope="col">Output</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><span class="user-select-all">**Your text**</span></td>
-                                        <td><strong>Your text</strong></td>
-                                        <td class="text-end">
-                                            <button data-format="**TEXT**"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">*Your text*</span></td>
-                                        <td><em>Your text</em></td>
-                                        <td class="text-end">
-                                            <button data-format="*TEXT*"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">__Your text__</span></td>
-                                        <td><u>Your text</u></td>
-                                        <td class="text-end">
-                                            <button data-format="__TEXT__"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="user-select-all">||Your text||</span></td>
-                                        <td><span class="spoiler">Your text</span></td>
-                                        <td class="text-end">
-                                            <button data-format="||TEXT||"
-                                                class="btn btn-sm btn-square btn-neutral format-example">
-                                                <i class="ph ph-list-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer py-2 bg-surface-secondary">
+            <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="offcanvas">Close</button>
+            <button type="button" class="btn btn-sm btn-primary" id="save-settings-button">Save</button>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
+        id="profile_modal" aria-labelledby="profile_modal" aria-modal="true" role="dialog">
+        <div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
+            <h5 class="offcanvas-title" id="profile_modal">User Profile</h5>
+            <button type="button" class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body vstack gap-5">
+            <div class="mb-3"><img alt="..." class="rounded w-full" src="https://cdn.pfps.gg/banners/7461-car-gif.gif">
+            </div>
+            <header class="bg-surface-secondary rounded mb-3">
+                <div class="container-fluid">
+                    <div class="row g-0">
+                        <div class="col ps-4 pt-4">
+                            <h1 class="h2" id="profile-display-name">Username</h1>
+                            <div class="d-flex gap-2 flex-wrap my-3">
+                                <div id="profile-badges">Badges</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="modal">Close</button>
+            </header>
+            <main class="py-6 bg-surface-secondary rounded">
+                <div class="container-fluid max-w-screen-xl">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="mb-3">Biography</h5>
+                            <p class="text-sm lh-relaxed" id="profile-bio">Bio</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="mb-3">Location</h5>
+                            <p class="text-sm lh-relaxed" id="profile-location">Location</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <div class="modal-footer py-2 bg-surface-secondary">
+            <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="offcanvas">Close</button>
+            <button type="button" class="btn btn-sm btn-primary" id="dm-button">Send DM</button>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
+        id="format-help-modal" aria-labelledby="format-help-modal" aria-modal="true" role="dialog">
+        <div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
+            <h5 class="offcanvas-title" id="format-help-modal">Chat Formatting</h5>
+            <button type="button" class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body vstack gap-5">
+            <div class="card mb-3">
+                <div class="card-header d-flex align-items-center">
+                    <h5 class="me-auto">Text Colors</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-nowrap">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Input</th>
+                                <th scope="col">Output</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="user-select-all">[pi]Your text[/pi]</span></td>
+                                <td><span class="text-pink-500">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[pi]TEXT[/pi]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">[re]Your text[/re]</span></td>
+                                <td><span class="text-red-500">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[re]TEXT[/re]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">[or]Your text[/or]</span></td>
+                                <td><span class="text-orange-500">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[or]TEXT[/or]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">[ye]Your text[/ye]</span></td>
+                                <td><span class="text-yellow-500">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[ye]TEXT[/ye]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">[gr]Your text[/gr]</span></td>
+                                <td><span class="text-green-500">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[gr]TEXT[/gr]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">[bl]Your text[/bl]</span></td>
+                                <td><span class="text-blue-500">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[bl]TEXT[/bl]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">[pu]Your text[/pu]</span></td>
+                                <td><span class="text-purple-500">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[pu]TEXT[/pu]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+            <div class="card mb-3">
+                <div class="card-header d-flex align-items-center">
+                    <h5 class="me-auto">Gradient Text Colors</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-nowrap">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Input</th>
+                                <th scope="col">Output</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="user-select-all">[ra]Your text[/ra]</span></td>
+                                <td><span
+                                        style="background-image: linear-gradient(to right, #EF476F, #FFAE66, #FFD166, #06D6A0, #118AB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your
+                                        text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[ra]TEXT[/ra]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">[us]Your text[/us]</span></td>
+                                <td><span
+                                        style="background-image: linear-gradient(to right, #FF334F, #DEE1F3, #3471E3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your
+                                        text</span></td>
+                                <td class="text-end">
+                                    <button data-format="[us]TEXT[/us]"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <h5 class="me-auto">Text Styles</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-nowrap">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Input</th>
+                                <th scope="col">Output</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="user-select-all">**Your text**</span></td>
+                                <td><strong>Your text</strong></td>
+                                <td class="text-end">
+                                    <button data-format="**TEXT**"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">*Your text*</span></td>
+                                <td><em>Your text</em></td>
+                                <td class="text-end">
+                                    <button data-format="*TEXT*"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">__Your text__</span></td>
+                                <td><u>Your text</u></td>
+                                <td class="text-end">
+                                    <button data-format="__TEXT__"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="user-select-all">||Your text||</span></td>
+                                <td><span class="spoiler">Your text</span></td>
+                                <td class="text-end">
+                                    <button data-format="||TEXT||"
+                                        class="btn btn-sm btn-square btn-neutral format-example">
+                                        <i class="ph ph-list-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer py-2 bg-surface-secondary">
+            <button type="button" class="btn btn-sm btn-neutral" data-bs-dismiss="offcanvas">Close</button>
         </div>
     </div>
 
