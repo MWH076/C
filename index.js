@@ -302,7 +302,7 @@ function createMessageElement(message, messageId, isDm = false) {
                     <div class="ms-auto text-end">
                         <div class="dropdown">
                             <a class="text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="ph ph-toolbox text-md"></i>
+                                <i class="ph ph-toolbox text-md me-3"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a href="#!" class="dropdown-item" onclick="editMessage('${messageId}', ${isDm})">Edit</a>
