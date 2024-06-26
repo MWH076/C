@@ -13,9 +13,7 @@ var firebaseConfig = {
 };
 
 // Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -53,21 +51,6 @@ const PROFILE_MODAL_ID = 'profile_modal';
 // Variables
 let currentDmUserId = null;
 
-// Utility function to debounce
-function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-        const context = this;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(context, args), wait);
-    };
-}
-
-elements.dmSearchInput?.addEventListener('input', debounce(function () {
-    const query = this.value.toLowerCase();
-    loadDms(query);
-}, 300));
-
 // Event listeners
 elements.loginButton?.addEventListener('click', login);
 elements.logoutButton?.addEventListener('click', logout);
@@ -76,10 +59,10 @@ elements.saveSettingsButton?.addEventListener('click', saveSettings);
 elements.globalChatButton?.addEventListener('click', showGlobalChat);
 elements.dmsButton?.addEventListener('click', showDms);
 elements.dmSendButton?.addEventListener('click', sendDmMessage);
-elements.dmSearchInput?.addEventListener('input', debounce(function () {
+elements.dmSearchInput?.addEventListener('input', function () {
     const query = this.value.toLowerCase();
     loadDms(query);
-}, 300));
+});
 
 // Authentication state change handler
 auth.onAuthStateChanged(handleAuthStateChanged);
@@ -285,29 +268,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function loadMessages(lastVisible = null) {
-    let query = db.collection('messages').orderBy('timestamp').limit(20);
-    if (lastVisible) {
-        query = query.startAfter(lastVisible);
-    }
-    query.get().then(snapshot => {
-        const fragment = document.createDocumentFragment();
-        const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+function loadMessages() {
+    db.collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
+        elements.chatBox.innerHTML = '';
         snapshot.forEach(doc => {
             const message = doc.data();
             const messageElement = createMessageElement(message, doc.id, false);
-            fragment.appendChild(messageElement);
+            elements.chatBox.appendChild(messageElement);
         });
-        elements.chatBox.innerHTML = '';
-        elements.chatBox.appendChild(fragment);
         addUsernameClickListeners();
         elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
-        elements.chatBox.onscroll = () => {
-            if (elements.chatBox.scrollTop + elements.chatBox.clientHeight >= elements.chatBox.scrollHeight) {
-                loadMessages(lastDoc);
-            }
-        };
-    }).catch(console.error);
+    });
 }
 
 function createMessageElement(message, messageId, isDm = false) {
@@ -334,8 +305,8 @@ function createMessageElement(message, messageId, isDm = false) {
                                 <i class="ph ph-toolbox text-md me-3"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#!" class="dropdown-item edit-button" data-message-id="${messageId}" data-is-dm="${isDm}">Edit</a>
-                                <a href="#!" class="dropdown-item delete-button" data-message-id="${messageId}" data-is-dm="${isDm}">Delete</a>
+                                <a href="#!" class="dropdown-item" onclick="editMessage('${messageId}', ${isDm})">Edit</a>
+                                <a href="#!" class="dropdown-item" onclick="deleteMessage('${messageId}', ${isDm})">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -484,13 +455,11 @@ function loadDmMessages(uid) {
     const dmId = createDmId(currentUser, uid);
 
     db.collection('dms').doc(dmId).collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
-        const fragment = document.createDocumentFragment();
+        elements.dmChatBox.innerHTML = '';
         snapshot.forEach(doc => {
             const message = doc.data();
-            fragment.appendChild(createMessageElement(message, doc.id, true));
+            elements.dmChatBox.appendChild(createMessageElement(message, doc.id, true));
         });
-        elements.dmChatBox.innerHTML = '';
-        elements.dmChatBox.appendChild(fragment);
         elements.dmChatBox.scrollTop = elements.dmChatBox.scrollHeight;
     });
 }
@@ -516,24 +485,34 @@ function saveSettings() {
 function updateMessageNames(uid, newName) {
     const batch = db.batch();
 
-    db.collection('messages').where('uid', '==', uid).get().then(snapshot => {
+    const globalMessagesPromise = db.collection('messages').where('uid', '==', uid).get().then(snapshot => {
         snapshot.forEach(doc => {
             batch.update(doc.ref, { name: newName });
         });
-        return db.collection('dms').where('participants', 'array-contains', uid).get();
-    }).then(snapshot => {
-        const updatePromises = snapshot.docs.map(dmDoc => {
+    });
+
+    const dmMessagesPromise = db.collection('dms').where('participants', 'array-contains', uid).get().then(snapshot => {
+        const updatePromises = [];
+
+        snapshot.forEach(dmDoc => {
             const dmId = dmDoc.id;
             const messagesRef = db.collection('dms').doc(dmId).collection('messages');
-            return messagesRef.where('uid', '==', uid).get().then(messagesSnapshot => {
+
+            const updatePromise = messagesRef.where('uid', '==', uid).get().then(messagesSnapshot => {
                 messagesSnapshot.forEach(messageDoc => {
                     batch.update(messageDoc.ref, { name: newName });
                 });
             });
+
+            updatePromises.push(updatePromise);
         });
+
         return Promise.all(updatePromises);
-    }).then(() => batch.commit())
-    .then(() => {
+    });
+
+    Promise.all([globalMessagesPromise, dmMessagesPromise]).then(() => {
+        return batch.commit();
+    }).then(() => {
         loadProfile();
         hideModal('modal_example');
     }).catch(console.error);
