@@ -514,7 +514,7 @@ function updateMessageNames(uid, newName) {
         return batch.commit();
     }).then(() => {
         loadProfile();
-        hideModal('modal_example');
+        hideOffcanvas('offcanvasExample');
     }).catch(console.error);
 }
 
@@ -526,10 +526,10 @@ function updateUserProfile(user, updates) {
     }).catch(console.error);
 }
 
-function hideModal(modalId) {
-    const modal = document.getElementById(modalId);
-    const modalInstance = bootstrap.Modal.getInstance(modal);
-    modalInstance.hide();
+function hideOffcanvas(offcanvasId) {
+    const offcanvas = document.getElementById(offcanvasId);
+    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvas);
+    offcanvasInstance.hide();
 }
 
 // Initialization
