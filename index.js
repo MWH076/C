@@ -47,11 +47,30 @@ const elements = {
 // Constants
 const MESSAGE_LIMIT = 5000;
 const PROFILE_MODAL_ID = 'profile_modal';
+const badgeClasses = {
+    'Administrator': 'bg-red-500 ph-shield-star',
+    'Moderator': 'bg-pink-500 ph-gavel',
+    'Supporter3': 'bg-blue-500 ph-crown-simple',
+    'Supporter2': 'bg-purple-500 ph-diamond',
+    'Supporter1': 'bg-indigo-500 ph-heart',
+    'Veteran': 'bg-orange-500 ph-star',
+    'User': 'bg-gray-700 ph-user'
+};
 
 // Variables
 let currentDmUserId = null;
 
-// Event listeners
+// Utility functions
+const toggleVisibility = (element, show) => element?.classList.toggle('d-none', !show);
+const openOffcanvas = (id) => new bootstrap.Offcanvas(document.getElementById(id)).show();
+const closeOffcanvas = (id) => bootstrap.Offcanvas.getInstance(document.getElementById(id)).hide();
+const handleFirebaseError = (error) => console.error("Firebase Error:", error);
+
+// Authentication
+const login = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+const logout = () => auth.signOut();
+
+// Event Listeners
 elements.loginButton?.addEventListener('click', login);
 elements.logoutButton?.addEventListener('click', logout);
 elements.sendButton?.addEventListener('click', sendMessage);
@@ -59,24 +78,11 @@ elements.saveSettingsButton?.addEventListener('click', saveSettings);
 elements.globalChatButton?.addEventListener('click', showGlobalChat);
 elements.dmsButton?.addEventListener('click', showDms);
 elements.dmSendButton?.addEventListener('click', sendDmMessage);
-elements.dmSearchInput?.addEventListener('input', function () {
-    const query = this.value.toLowerCase();
-    loadDms(query);
-});
+elements.dmSearchInput?.addEventListener('input', () => loadDms(elements.dmSearchInput.value.toLowerCase()));
 
-// Authentication state change handler
 auth.onAuthStateChanged(handleAuthStateChanged);
 
-// Auth functions
-function login() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider);
-}
-
-function logout() {
-    auth.signOut();
-}
-
+// Authentication state change handler
 function handleAuthStateChanged(user) {
     if (user) {
         setupUser(user);
@@ -106,27 +112,10 @@ function setupUser(user) {
                 badges: ["User"]
             }, { merge: true });
         }
-    }).catch(console.error);
+    }).catch(handleFirebaseError);
 }
 
-// UI functions
-function toggleVisibility(element, show) {
-    if (element) {
-        element.classList.toggle('d-none', !show);
-    }
-}
-
-function openOffcanvas(offcanvasId) {
-    const offcanvas = new bootstrap.Offcanvas(document.getElementById(offcanvasId));
-    offcanvas.show();
-}
-
-function closeOffcanvas(offcanvasId) {
-    const offcanvas = document.getElementById(offcanvasId);
-    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvas);
-    offcanvasInstance.hide();
-}
-
+// Profile functions
 function loadProfile() {
     const user = auth.currentUser;
     const userRef = db.collection('users').doc(user.uid);
@@ -144,7 +133,7 @@ function loadProfile() {
         } else {
             console.log("No such user document!");
         }
-    }).catch(console.error);
+    }).catch(handleFirebaseError);
 }
 
 function showProfileModal(uid) {
@@ -167,9 +156,7 @@ function showProfileModal(uid) {
         } else {
             console.error("No such user!");
         }
-    }).catch(error => {
-        console.error("Error fetching user document:", error);
-    });
+    }).catch(handleFirebaseError);
 }
 
 function handleProfileDmButtonClick(uid) {
@@ -178,20 +165,8 @@ function handleProfileDmButtonClick(uid) {
 }
 
 function createBadge(badge) {
-    const badgeClasses = {
-        'Administrator': 'bg-red-500 ph-shield-star',
-        'Moderator': 'bg-pink-500 ph-gavel',
-        'Supporter3': 'bg-blue-500 ph-crown-simple',
-        'Supporter2': 'bg-purple-500 ph-diamond',
-        'Supporter1': 'bg-indigo-500 ph-heart',
-        'Veteran': 'bg-orange-500 ph-star',
-        'User': 'bg-gray-700 ph-user'
-    };
-
-    const badgeName = badge;
-    const badgeClass = badgeClasses[badgeName];
-
-    return `<span class="badge ${badgeClass}" data-toggle="tooltip" data-placement="top" title="${badgeName}"><i class="ph ${badgeClass}"></i></span>`;
+    const badgeClass = badgeClasses[badge];
+    return `<span class="badge ${badgeClass}" data-toggle="tooltip" data-placement="top" title="${badge}"><i class="ph ${badgeClass}"></i></span>`;
 }
 
 // Navigation functions
@@ -205,7 +180,7 @@ function showDms() {
     toggleVisibility(elements.dmContainer, true);
 }
 
-// Message functions
+// Chat functions
 function sendMessage() {
     const messageText = parseMessageText(elements.chatInput.value.trim());
     if (messageText.length > MESSAGE_LIMIT) {
@@ -220,7 +195,7 @@ function sendMessage() {
             timestamp: firebase.firestore.Timestamp.now()
         }).then(() => {
             elements.chatInput.value = '';
-        }).catch(console.error);
+        }).catch(handleFirebaseError);
     }
 }
 
@@ -305,8 +280,8 @@ function createMessageElement(message, messageId, isDm = false) {
                                 <i class="ph ph-toolbox text-md me-3"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#!" class="dropdown-item" onclick="editMessage('${messageId}', ${isDm})">Edit</a>
-                                <a href="#!" class="dropdown-item" onclick="deleteMessage('${messageId}', ${isDm})">Delete</a>
+                                <a href="#!" class="dropdown-item edit-button" data-message-id="${messageId}" data-is-dm="${isDm}">Edit</a>
+                                <a href="#!" class="dropdown-item delete-button" data-message-id="${messageId}" data-is-dm="${isDm}">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -328,7 +303,7 @@ function deleteMessage(messageId, isDm = false) {
     docRef.update({
         text: '',
         isDeleted: true
-    }).catch(console.error);
+    }).catch(handleFirebaseError);
 }
 
 function editMessage(messageId, isDm = false) {
@@ -343,7 +318,7 @@ function editMessage(messageId, isDm = false) {
         docRef.update({
             text: newText.trim(),
             isEdited: true
-        }).catch(console.error);
+        }).catch(handleFirebaseError);
     }
 }
 
@@ -385,9 +360,7 @@ function sendDmMessage() {
         }).then(() => {
             elements.dmChatInput.value = '';
             console.log('Message sent successfully');
-        }).catch(error => {
-            console.error('Error sending message:', error);
-        });
+        }).catch(handleFirebaseError);
     }
 }
 
@@ -438,9 +411,7 @@ function loadDms(searchQuery = '') {
                     console.error("User document does not exist:", userDoc.id);
                 }
             });
-        }).catch(error => {
-            console.error("Error fetching user documents:", error);
-        });
+        }).catch(handleFirebaseError);
     });
 }
 
@@ -479,7 +450,7 @@ function saveSettings() {
 
         const updates = { displayName: newName, bio: newBio, location: newLocation };
         updateUserProfile(user, updates);
-    });
+    }).catch(handleFirebaseError);
 }
 
 function updateMessageNames(uid, newName) {
@@ -515,7 +486,7 @@ function updateMessageNames(uid, newName) {
     }).then(() => {
         loadProfile();
         hideOffcanvas('offcanvasExample');
-    }).catch(console.error);
+    }).catch(handleFirebaseError);
 }
 
 function updateUserProfile(user, updates) {
@@ -523,13 +494,7 @@ function updateUserProfile(user, updates) {
         return db.collection('users').doc(user.uid).set(updates, { merge: true });
     }).then(() => {
         updateMessageNames(user.uid, updates.displayName);
-    }).catch(console.error);
-}
-
-function hideOffcanvas(offcanvasId) {
-    const offcanvas = document.getElementById(offcanvasId);
-    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvas);
-    offcanvasInstance.hide();
+    }).catch(handleFirebaseError);
 }
 
 // Initialization
@@ -547,7 +512,7 @@ function init() {
             const messageId = event.target.dataset.messageId;
             const messageText = document.getElementById(`message-text-${messageId}`).innerText;
             const isDm = event.target.dataset.isDm === 'true';
-            editMessage(messageId, messageText, isDm);
+            editMessage(messageId, isDm);
         } else if (event.target.matches('.delete-button')) {
             const messageId = event.target.dataset.messageId;
             const isDm = event.target.dataset.isDm === 'true';
