@@ -523,4 +523,31 @@ document.addEventListener('DOMContentLoaded', function () {
             Chat.deleteMessage(messageId, isDm);
         }
     });
+
+    const deleteOldMessages = () => {
+        const now = firebase.firestore.Timestamp.now();
+        const cutoff = new Date(now.seconds * 1000 - 60 * 1000);
+        const cutoffTimestamp = firebase.firestore.Timestamp.fromDate(cutoff);
+
+        const globalMessagesQuery = db.collection('messages').where('timestamp', '<', cutoffTimestamp);
+        const dmMessagesQuery = db.collectionGroup('messages').where('timestamp', '<', cutoffTimestamp);
+
+        globalMessagesQuery.get().then(snapshot => {
+            const batch = db.batch();
+            snapshot.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            return batch.commit();
+        }).catch(Utils.handleFirebaseError);
+
+        dmMessagesQuery.get().then(snapshot => {
+            const batch = db.batch();
+            snapshot.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            return batch.commit();
+        }).catch(Utils.handleFirebaseError);
+    };
+
+    setInterval(deleteOldMessages, 30000);
 });
