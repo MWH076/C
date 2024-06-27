@@ -75,6 +75,16 @@ const hideOffcanvas = (id) => {
     }
 };
 
+const validateInput = (inputElement, condition) => {
+    if (condition) {
+        inputElement.classList.add('is-invalid');
+        return false;
+    } else {
+        inputElement.classList.remove('is-invalid');
+        return true;
+    }
+};
+
 // Authentication
 const login = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 const logout = () => auth.signOut();
@@ -451,22 +461,13 @@ function saveSettings() {
     const newLocation = elements.newLocation.value;
     const user = auth.currentUser;
 
-    [elements.newDisplayName, elements.newBio, elements.newLocation].forEach(el => {
-        el.classList.remove('is-invalid');
-    });
-
     let valid = true;
 
-    if (newName.length < 3 || newName.length > 16) {
-        elements.newDisplayName.classList.add('is-invalid');
-        valid = false;
-    } if (newBio.length > 500) {
-        elements.newBio.classList.add('is-invalid');
-        valid = false;
-    } if (newLocation.length > 50) {
-        elements.newLocation.classList.add('is-invalid');
-        valid = false;
-    } if (!valid) return;
+    valid = validateInput(elements.newDisplayName, newName.length < 3 || newName.length > 16) && valid;
+    valid = validateInput(elements.newBio, newBio.length > 500) && valid;
+    valid = validateInput(elements.newLocation, newLocation.length > 50) && valid;
+
+    if (!valid) return;
 
     db.collection('users').where('displayName', '==', newName).get().then(snapshot => {
         if (!snapshot.empty && snapshot.docs[0].id !== user.uid) {
@@ -479,6 +480,11 @@ function saveSettings() {
         updateUserProfile(user, updates);
     }).catch(handleFirebaseError);
 }
+
+document.getElementById('save-settings-button').addEventListener('click', function(event) {
+    event.preventDefault();
+    saveSettings();
+});
 
 function updateMessageNames(uid, newName) {
     const batch = db.batch();
