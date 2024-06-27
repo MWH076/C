@@ -20,6 +20,7 @@ const db = firebase.firestore();
 // Constants
 const MESSAGE_LIMIT = 5000;
 const PROFILE_MODAL_ID = 'profile_modal';
+const MESSAGE_LIFETIME = 60;
 const badgeClasses = {
     'Administrator': 'bg-red-500 ph-shield-star',
     'Moderator': 'bg-pink-500 ph-gavel',
@@ -251,11 +252,15 @@ const Chat = {
             return;
         }
         if (messageText) {
+            const timestamp = firebase.firestore.Timestamp.now();
+            const ttl = new Date(timestamp.seconds * 1000 + MESSAGE_LIFETIME * 1000);
+
             db.collection('messages').add({
                 text: messageText,
                 uid: auth.currentUser.uid,
                 name: auth.currentUser.displayName,
-                timestamp: firebase.firestore.Timestamp.now()
+                timestamp: timestamp,
+                ttl: ttl
             }).then(() => {
                 elements.chatInput.value = '';
             }).catch(Utils.handleFirebaseError);
