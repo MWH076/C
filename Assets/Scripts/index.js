@@ -276,11 +276,12 @@ const Chat = {
             { regex: /\[pi\](.*?)\[\/pi\]/g, replacement: '<span class="text-pink-500">$1</span>' },
             { regex: /\[ra\](.*?)\[\/ra\]/g, replacement: '<span style="background-image: linear-gradient(to right, #EF476F, #FFAE66, #FFD166, #06D6A0, #118AB2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$1</span>' },
             { regex: /\[us\](.*?)\[\/us\]/g, replacement: '<span style="background-image: linear-gradient(to right, #FF334F, #DEE1F3, #3471E3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$1</span>' },
-            { regex: /\(D:\)/g, replacement: '<img src="./Assets/Images/Emojis/01.png" class="mikemoji" alt="D:">' },
-            { regex: /\(:o\)/g, replacement: '<img src="./Assets/Images/Emojis/02.png" class="mikemoji" alt=":o">' },
-            { regex: /\(:O\)/g, replacement: '<img src="./Assets/Images/Emojis/03.png" class="mikemoji" alt=":O">' },
-            { regex: /\(<3\)/g, replacement: '<img src="./Assets/Images/Emojis/04.png" class="mikemoji" alt="<3">' },
-            { regex: /\(\*\)/g, replacement: '<img src="./Assets/Images/Emojis/05.png" class="mikemoji" alt="*">' }
+            { regex: /\(:D\)/g, replacement: '<img src="./Assets/Images/Emojis/01.png" class="mikemoji" alt=":D">' },
+            { regex: /\(D:\)/g, replacement: '<img src="./Assets/Images/Emojis/02.png" class="mikemoji" alt="D:">' },
+            { regex: /\(:o\)/g, replacement: '<img src="./Assets/Images/Emojis/03.png" class="mikemoji" alt=":o">' },
+            { regex: /\(:O\)/g, replacement: '<img src="./Assets/Images/Emojis/04.png" class="mikemoji" alt=":O">' },
+            { regex: /\(<3\)/g, replacement: '<img src="./Assets/Images/Emojis/05.png" class="mikemoji" alt="<3">' },
+            { regex: /\(\*\)/g, replacement: '<img src="./Assets/Images/Emojis/06.png" class="mikemoji" alt="*">' }
         ];
 
         replacements.forEach(({ regex, replacement }) => {
