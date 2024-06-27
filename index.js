@@ -481,7 +481,7 @@ function saveSettings() {
     }).catch(handleFirebaseError);
 }
 
-document.getElementById('save-settings-button').addEventListener('click', function(event) {
+document.getElementById('save-settings-button').addEventListener('click', function (event) {
     event.preventDefault();
     saveSettings();
 });
