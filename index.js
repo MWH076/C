@@ -451,8 +451,26 @@ function saveSettings() {
     const newLocation = elements.newLocation.value;
     const user = auth.currentUser;
 
+    [elements.newDisplayName, elements.newBio, elements.newLocation].forEach(el => {
+        el.classList.remove('is-invalid');
+    });
+
+    let valid = true;
+
+    if (newName.length < 3 || newName.length > 16) {
+        elements.newDisplayName.classList.add('is-invalid');
+        valid = false;
+    } if (newBio.length > 500) {
+        elements.newBio.classList.add('is-invalid');
+        valid = false;
+    } if (newLocation.length > 50) {
+        elements.newLocation.classList.add('is-invalid');
+        valid = false;
+    } if (!valid) return;
+
     db.collection('users').where('displayName', '==', newName).get().then(snapshot => {
         if (!snapshot.empty && snapshot.docs[0].id !== user.uid) {
+            elements.newDisplayName.classList.add('is-invalid');
             alert("Display name is already taken. Please choose another one.");
             return;
         }

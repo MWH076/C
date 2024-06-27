@@ -201,16 +201,16 @@
         </div>
         <div class="offcanvas-body vstack gap-5">
             <div>
-                <form>
+                <form id="settings-form">
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="mb-5">
                                 <div>
-                                    <label class="form-label">
-                                        Change Username
-                                    </label>
-                                    <input type="text" class="form-control" id="new-display-name" minlength="3"
-                                        maxlength="16" required pattern=".{3,16}">
+                                    <label class="form-label">Change Username</label>
+                                    <input type="text" class="form-control" id="new-display-name"
+                                        placeholder="Username">
+                                    <span class="mt-2 invalid-feedback">Username must be between 3 and 16 characters and
+                                        unique.</span>
                                 </div>
                             </div>
                             <div class="card bg-dark border-0 shadow-none ml-md-4">
@@ -219,44 +219,20 @@
                                     <ul class="text-blue-400 font-code pl-4 mb-0">
                                         <li class="text-xs">Minimum 3 characters</li>
                                         <li class="text-xs">Maximum 16 characters</li>
-                                        <li class="text-xs">Must be unqiue</li>
+                                        <li class="text-xs">Must be unique</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--<div class="card mb-3">
-                            <div class="card-body">
-                                <div class="mb-5">
-                                    <div>
-                                        <label class="form-label">
-                                            Change Banner
-                                        </label>
-                                        <input type="url" class="form-control" id="profile-banner-url" placeholder="https://pfps.gg/banners/your-banner.gif">
-                                    </div>
-                                </div>
-                                <div class="card bg-dark border-0 shadow-none ml-md-4">
-                                    <div class="card-body">
-                                        <h5 class="text-white mb-2">Banner guidelines</h5>
-                                        <ul class="text-blue-400 font-code pl-4 mb-0">
-                                            <li class="text-xs">Must be from <a href="https://pfps.gg/banners/" target="_blank">pfps.gg/banners/</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="mb-5">
                                 <div>
-                                    <label class="form-label">
-                                        Change Bio
-                                    </label>
-                                    <textarea class="form-control"
-                                        placeholder="Make it short, make it sweet, make it yours!" id="new-bio" rows="3"
-                                        maxlength="500">
-                                            </textarea>
+                                    <label class="form-label">Change Bio</label>
+                                    <textarea class="form-control" id="new-bio" rows="3"
+                                        placeholder="Make it short, make it sweet, make it yours!"></textarea>
+                                    <span class="mt-2 invalid-feedback">Bio must be a maximum of 500 characters.</span>
                                 </div>
                             </div>
                             <div class="card bg-dark border-0 shadow-none ml-md-4">
@@ -273,11 +249,11 @@
                         <div class="card-body">
                             <div class="mb-5">
                                 <div>
-                                    <label class="form-label">
-                                        Change Location
-                                    </label>
-                                    <input type="text" class="form-control" placeholder="In a cozy cave with WiFi!"
-                                        id="new-location" maxlength="50">
+                                    <label class="form-label">Change Location</label>
+                                    <input type="text" class="form-control" id="new-location"
+                                        placeholder="In a cozy cave with WiFi!">
+                                    <span class="mt-2 invalid-feedback">Location must be a maximum of 50
+                                        characters.</span>
                                 </div>
                             </div>
                             <div class="card bg-dark border-0 shadow-none ml-md-4">
