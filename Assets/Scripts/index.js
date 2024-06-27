@@ -20,7 +20,6 @@ const db = firebase.firestore();
 // Constants
 const MESSAGE_LIMIT = 5000;
 const PROFILE_MODAL_ID = 'profile_modal';
-const MESSAGE_LIFETIME = 60;
 const badgeClasses = {
     'Administrator': 'bg-red-500 ph-shield-star',
     'Moderator': 'bg-pink-500 ph-gavel',
@@ -252,15 +251,11 @@ const Chat = {
             return;
         }
         if (messageText) {
-            const timestamp = firebase.firestore.Timestamp.now();
-            const ttl = new Date(timestamp.seconds * 1000 + MESSAGE_LIFETIME * 1000);
-
             db.collection('messages').add({
                 text: messageText,
                 uid: auth.currentUser.uid,
                 name: auth.currentUser.displayName,
-                timestamp: timestamp,
-                ttl: ttl
+                timestamp: firebase.firestore.Timestamp.now()
             }).then(() => {
                 elements.chatInput.value = '';
             }).catch(Utils.handleFirebaseError);
@@ -528,31 +523,4 @@ document.addEventListener('DOMContentLoaded', function () {
             Chat.deleteMessage(messageId, isDm);
         }
     });
-
-    const deleteOldMessages = () => {
-        const now = firebase.firestore.Timestamp.now();
-        const cutoff = new Date(now.seconds * 1000 - 60 * 1000);
-        const cutoffTimestamp = firebase.firestore.Timestamp.fromDate(cutoff);
-
-        const globalMessagesQuery = db.collection('messages').where('timestamp', '<', cutoffTimestamp);
-        const dmMessagesQuery = db.collectionGroup('messages').where('timestamp', '<', cutoffTimestamp);
-
-        globalMessagesQuery.get().then(snapshot => {
-            const batch = db.batch();
-            snapshot.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-            return batch.commit();
-        }).catch(Utils.handleFirebaseError);
-
-        dmMessagesQuery.get().then(snapshot => {
-            const batch = db.batch();
-            snapshot.forEach(doc => {
-                batch.delete(doc.ref);
-            });
-            return batch.commit();
-        }).catch(Utils.handleFirebaseError);
-    };
-
-    setInterval(deleteOldMessages, 30000);
 });
