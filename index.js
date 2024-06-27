@@ -323,7 +323,7 @@ function editMessage(messageId, isDm = false) {
         const collection = isDm ? 'dms' : 'messages';
         const dmId = isDm ? createDmId(auth.currentUser.uid, currentDmUserId) : null;
         const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
-        
+
         docRef.update({
             text: newText.trim(),
             isEdited: true
