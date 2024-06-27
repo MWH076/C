@@ -61,10 +61,19 @@ const badgeClasses = {
 let currentDmUserId = null;
 
 // Utility functions
+const handleFirebaseError = (error) => console.error("Firebase Error:", error);
 const toggleVisibility = (element, show) => element?.classList.toggle('d-none', !show);
 const openOffcanvas = (id) => new bootstrap.Offcanvas(document.getElementById(id)).show();
 const closeOffcanvas = (id) => bootstrap.Offcanvas.getInstance(document.getElementById(id)).hide();
-const handleFirebaseError = (error) => console.error("Firebase Error:", error);
+const hideOffcanvas = (id) => {
+    const offcanvas = document.getElementById(id);
+    if (offcanvas) {
+        const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvas);
+        if (offcanvasInstance) {
+            offcanvasInstance.hide();
+        }
+    }
+};
 
 // Authentication
 const login = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
