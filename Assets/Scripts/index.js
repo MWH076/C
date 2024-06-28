@@ -115,7 +115,9 @@ const User = {
                     displayName: user.displayName,
                     bio: "",
                     location: "",
-                    badges: ["User"]
+                    badges: ["User"],
+                    level: 1,
+                    experience: 0
                 }, { merge: true });
             }
         }).catch(Utils.handleFirebaseError);
@@ -134,6 +136,9 @@ const User = {
                 elements.newDisplayName.value = displayName;
                 elements.newBio.value = userData.bio || '';
                 elements.newLocation.value = userData.location || '';
+
+                document.getElementById('user-level').innerText = userData.level || 1;
+                document.getElementById('user-experience').innerText = userData.experience || 0;
             } else {
                 console.log("No such user document!");
             }
@@ -236,6 +241,20 @@ const User = {
             User.updateMessageNames(user.uid, updates.displayName);
         }).catch(Utils.handleFirebaseError);
     },
+    incrementExperience: (uid, points) => {
+        const userRef = db.collection('users').doc(uid);
+        userRef.get().then(doc => {
+            if (doc.exists) {
+                let { experience, level } = doc.data();
+                experience += points;
+                const newLevel = User.calculateLevel(experience);
+                userRef.update({ experience, level: newLevel });
+            }
+        }).catch(Utils.handleFirebaseError);
+    },
+    calculateLevel: (experience) => {
+        return Math.floor(Math.sqrt(experience / 100));
+    },
 };
 
 // Chat Module
@@ -258,6 +277,7 @@ const Chat = {
                 timestamp: firebase.firestore.Timestamp.now()
             }).then(() => {
                 elements.chatInput.value = '';
+                User.incrementExperience(auth.currentUser.uid, 10);
             }).catch(Utils.handleFirebaseError);
         }
     },
@@ -409,7 +429,7 @@ const DM = {
                 timestamp: firebase.firestore.Timestamp.now()
             }).then(() => {
                 elements.dmChatInput.value = '';
-                console.log('Message sent successfully');
+                User.incrementExperience(auth.currentUser.uid, 10);
             }).catch(Utils.handleFirebaseError);
         }
     },
