@@ -263,8 +263,14 @@ const Chat = {
         }
 
         const messageText = Chat.parseMessageText(elements.chatInput.value.trim());
-        if (!Utils.validateInput(elements.chatInput, messageText.length === 0 || messageText.length > MESSAGE_LIMIT)) {
+        const isValid = Utils.validateInput(elements.chatInput, messageText.length === 0 || messageText.length > MESSAGE_LIMIT);
+
+        if (!isValid) {
+            const errorElement = document.getElementById('global-input-error');
+            errorElement.innerText = `Message must be between 1 and ${MESSAGE_LIMIT} characters.`;
             return;
+        } else {
+            document.getElementById('global-input-error').innerText = '';
         }
 
         if (messageText) {
@@ -415,8 +421,14 @@ const DM = {
         }
 
         const messageText = Chat.parseMessageText(elements.dmChatInput.value.trim());
-        if (!Utils.validateInput(elements.dmChatInput, messageText.length === 0 || messageText.length > MESSAGE_LIMIT)) {
+        const isValid = Utils.validateInput(elements.dmChatInput, messageText.length === 0 || messageText.length > MESSAGE_LIMIT);
+
+        if (!isValid) {
+            const errorElement = document.getElementById('dm-input-error');
+            errorElement.innerText = `Message must be between 1 and ${MESSAGE_LIMIT} characters.`;
             return;
+        } else {
+            document.getElementById('dm-input-error').innerText = '';
         }
 
         if (messageText && DM.currentDmUserId) {
