@@ -242,7 +242,7 @@ const User = {
         }).catch(Utils.handleFirebaseError);
     },
     incrementExperience: (uid) => {
-        const points = Math.ceil(Math.random() * 10);
+        const points = Math.ceil(Math.random() * 15);
         const userRef = db.collection('users').doc(uid);
         userRef.get().then(doc => {
             if (doc.exists) {
