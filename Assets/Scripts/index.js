@@ -19,6 +19,7 @@ const db = firebase.firestore();
 
 // Constants
 const MESSAGE_LIMIT = 5000;
+const COOLDOWN_PERIOD = 2000;
 const PROFILE_MODAL_ID = 'profile_modal';
 const badgeClasses = {
     'Administrator': 'bg-red-500 ph-shield-star',
@@ -251,7 +252,7 @@ const Chat = {
     sendMessage: () => {
         const currentTime = Date.now();
         const timeSinceLastMessage = currentTime - lastGlobalMessageTime;
-        const remainingCooldown = Math.max(0, 2000 - timeSinceLastMessage);
+        const remainingCooldown = Math.max(0, COOLDOWN_PERIOD - timeSinceLastMessage);
 
         if (remainingCooldown > 0) {
             const countdownElement = document.getElementById('global-countdown-timer');
@@ -409,7 +410,7 @@ const DM = {
     sendDmMessage: () => {
         const currentTime = Date.now();
         const timeSinceLastMessage = currentTime - lastDmMessageTime;
-        const remainingCooldown = Math.max(0, 2000 - timeSinceLastMessage);
+        const remainingCooldown = Math.max(0, COOLDOWN_PERIOD - timeSinceLastMessage);
 
         if (remainingCooldown > 0) {
             const countdownElement = document.getElementById('dm-countdown-timer');
@@ -523,14 +524,80 @@ const DM = {
     }
 };
 
+const handleInput = (textarea, type) => {
+    const errorElement = document.getElementById(`${type}-input-error`);
+    const charCountElement = document.getElementById(`${type}-char-count`);
+    const countdownElement = document.getElementById(`${type}-countdown-timer`);
+    const message = textarea.value.trim();
+    const currentTime = Date.now();
+    const lastMessageTime = type === 'global' ? lastGlobalMessageTime : lastDmMessageTime;
+    const remainingCooldown = Math.max(0, COOLDOWN_PERIOD - (currentTime - lastMessageTime));
+
+    charCountElement.innerText = `${message.length} / ${MESSAGE_LIMIT}`;
+    errorElement.innerText = '';
+    countdownElement.innerText = '';
+
+    if (message.length === 0 || message.length > MESSAGE_LIMIT) {
+        errorElement.innerText = `Message must be between 1 and ${MESSAGE_LIMIT} characters.`;
+        textarea.classList.add('is-invalid');
+    } else {
+        textarea.classList.remove('is-invalid');
+    }
+
+    if (remainingCooldown > 0) {
+        countdownElement.innerText = `Please wait ${remainingCooldown / 1000} seconds.`;
+        countdownElement.classList.add('text-danger');
+    }
+};
+
+const validateAndSendMessage = (type) => {
+    const textarea = document.getElementById(`${type}-chat-input`);
+    const errorElement = document.getElementById(`${type}-input-error`);
+    const countdownElement = document.getElementById(`${type}-countdown-timer`);
+    const message = textarea.value.trim();
+    const currentTime = Date.now();
+    const lastMessageTime = type === 'global' ? lastGlobalMessageTime : lastDmMessageTime;
+    const remainingCooldown = Math.max(0, COOLDOWN_PERIOD - (currentTime - lastMessageTime));
+
+    if (message.length === 0 || message.length > MESSAGE_LIMIT) {
+        errorElement.innerText = `Message must be between 1 and ${MESSAGE_LIMIT} characters.`;
+        return;
+    }
+
+    if (remainingCooldown > 0) {
+        countdownElement.innerText = `Please wait ${remainingCooldown / 1000} seconds.`;
+        countdownElement.classList.add('text-danger');
+        return;
+    }
+
+    textarea.value = '';
+    if (type === 'global') {
+        lastGlobalMessageTime = currentTime;
+    } else {
+        lastDmMessageTime = currentTime;
+    }
+
+    const messageData = {
+        text: message,
+        uid: auth.currentUser.uid,
+        name: auth.currentUser.displayName,
+        timestamp: firebase.firestore.Timestamp.now()
+    };
+
+    const collection = type === 'global' ? 'messages' : 'dms';
+    const docRef = type === 'global' ? db.collection(collection).add(messageData) : db.collection(collection).doc(DM.createDmId(auth.currentUser.uid, DM.currentDmUserId)).collection('messages').add(messageData);
+
+    docRef.catch(Utils.handleFirebaseError);
+};
+
 // Event Listeners
 elements.loginButton?.addEventListener('click', Auth.login);
 elements.logoutButton?.addEventListener('click', Auth.logout);
-elements.sendButton?.addEventListener('click', Chat.sendMessage);
+elements.sendButton?.addEventListener('click', () => validateAndSendMessage('global'));
 elements.saveSettingsButton?.addEventListener('click', User.saveSettings);
 elements.globalChatButton?.addEventListener('click', Chat.showGlobalChat);
 elements.dmsButton?.addEventListener('click', DM.showDms);
-elements.dmSendButton?.addEventListener('click', DM.sendDmMessage);
+elements.dmSendButton?.addEventListener('click', () => validateAndSendMessage('dm'));
 elements.dmSearchInput?.addEventListener('input', () => DM.loadDms(elements.dmSearchInput.value.toLowerCase()));
 
 auth.onAuthStateChanged(Auth.handleAuthStateChanged);
