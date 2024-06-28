@@ -241,7 +241,8 @@ const User = {
             User.updateMessageNames(user.uid, updates.displayName);
         }).catch(Utils.handleFirebaseError);
     },
-    incrementExperience: (uid, points) => {
+    incrementExperience: (uid) => {
+        const points = Math.floor(Math.random() * 10) + 1;
         const userRef = db.collection('users').doc(uid);
         userRef.get().then(doc => {
             if (doc.exists) {
@@ -253,7 +254,7 @@ const User = {
         }).catch(Utils.handleFirebaseError);
     },
     calculateLevel: (experience) => {
-        return Math.floor(Math.sqrt(experience / 100));
+        return Math.floor(Math.sqrt(experience / 25));
     },
 };
 
@@ -277,7 +278,7 @@ const Chat = {
                 timestamp: firebase.firestore.Timestamp.now()
             }).then(() => {
                 elements.chatInput.value = '';
-                User.incrementExperience(auth.currentUser.uid, 10);
+                User.incrementExperience(auth.currentUser.uid);
             }).catch(Utils.handleFirebaseError);
         }
     },
@@ -429,7 +430,7 @@ const DM = {
                 timestamp: firebase.firestore.Timestamp.now()
             }).then(() => {
                 elements.dmChatInput.value = '';
-                User.incrementExperience(auth.currentUser.uid, 10);
+                User.incrementExperience(auth.currentUser.uid);
             }).catch(Utils.handleFirebaseError);
         }
     },
