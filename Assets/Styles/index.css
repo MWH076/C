@@ -4,7 +4,7 @@
 */
 
 #chat-box, #dm-chat-box {
-    max-height: 340px;
+    height: 340px;
     overflow-y: auto;
 }
 
