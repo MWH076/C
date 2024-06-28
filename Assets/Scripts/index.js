@@ -241,17 +241,26 @@ const User = {
             User.updateMessageNames(user.uid, updates.displayName);
         }).catch(Utils.handleFirebaseError);
     },
-    incrementExperience: (uid) => {
+    incrementExperience: async (uid) => {
         const points = Math.ceil(Math.random() * 15);
         const userRef = db.collection('users').doc(uid);
-        userRef.get().then(doc => {
-            if (doc.exists) {
-                let { experience, level } = doc.data();
-                experience += points;
-                const newLevel = User.calculateLevel(experience);
-                userRef.update({ experience, level: newLevel });
-            }
-        }).catch(Utils.handleFirebaseError);
+
+        try {
+            await db.runTransaction(async (transaction) => {
+                const doc = await transaction.get(userRef);
+
+                if (doc.exists) {
+                    let { experience, level } = doc.data();
+                    experience += points;
+                    const newLevel = User.calculateLevel(experience);
+                    transaction.update(userRef, { experience, level: newLevel });
+                } else {
+                    console.error(`User document with uid ${uid} does not exist.`);
+                }
+            });
+        } catch (error) {
+            Utils.handleFirebaseError(error);
+        }
     },
     calculateLevel: (experience) => {
         return Math.floor(Math.sqrt(experience / 25));
