@@ -61,19 +61,25 @@ const elements = {
 const Utils = {
     handleFirebaseError: (error) => console.error("Firebase Error:", error),
     toggleVisibility: (element, show) => element?.classList.toggle('d-none', !show),
-    toggleOffcanvas: (id, show) => {
+    openOffcanvas: (id) => new bootstrap.Offcanvas(document.getElementById(id)).show(),
+    closeOffcanvas: (id) => bootstrap.Offcanvas.getInstance(document.getElementById(id)).hide(),
+    hideOffcanvas: (id) => {
         const offcanvas = document.getElementById(id);
         if (offcanvas) {
-            const instance = bootstrap.Offcanvas.getInstance(offcanvas);
-            if (show) {
-                if (!instance) new bootstrap.Offcanvas(offcanvas).show();
-                else instance.show();
-            } else if (instance) instance.hide();
+            const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvas);
+            if (offcanvasInstance) {
+                offcanvasInstance.hide();
+            }
         }
     },
     validateInput: (inputElement, condition) => {
-        inputElement.classList.toggle('is-invalid', condition);
-        return !condition;
+        if (condition) {
+            inputElement.classList.add('is-invalid');
+            return false;
+        } else {
+            inputElement.classList.remove('is-invalid');
+            return true;
+        }
     }
 };
 
@@ -116,7 +122,9 @@ const User = {
     },
     loadProfile: () => {
         const user = auth.currentUser;
-        db.collection('users').doc(user.uid).get().then(doc => {
+        const userRef = db.collection('users').doc(user.uid);
+
+        userRef.get().then(doc => {
             if (doc.exists) {
                 const userData = doc.data();
                 elements.profilePic.src = user.photoURL;
@@ -132,7 +140,9 @@ const User = {
         }).catch(Utils.handleFirebaseError);
     },
     showProfileModal: (uid) => {
-        db.collection('users').doc(uid).get().then(doc => {
+        const userRef = db.collection('users').doc(uid);
+
+        userRef.get().then(doc => {
             if (doc.exists) {
                 const userData = doc.data();
                 document.getElementById('profile-display-name').innerText = userData.displayName;
@@ -140,11 +150,11 @@ const User = {
                 document.getElementById('profile-location').innerText = userData.location || 'No location yet, exploring Earth!';
                 document.getElementById('profile-badges').innerHTML = userData.badges.map(User.createBadge).join(' ');
 
-                Utils.toggleOffcanvas(PROFILE_MODAL_ID, true);
+                Utils.openOffcanvas(PROFILE_MODAL_ID);
 
                 document.getElementById('dm-button').addEventListener('click', () => {
                     User.handleProfileDmButtonClick(uid);
-                    Utils.toggleOffcanvas(PROFILE_MODAL_ID, false);
+                    Utils.closeOffcanvas(PROFILE_MODAL_ID);
                 });
             } else {
                 console.error("No such user!");
@@ -153,7 +163,7 @@ const User = {
     },
     handleProfileDmButtonClick: (uid) => {
         DM.startDm(uid);
-        Utils.toggleOffcanvas(PROFILE_MODAL_ID, false);
+        Utils.closeOffcanvas(PROFILE_MODAL_ID);
     },
     createBadge: (badge) => {
         const badgeClass = badgeClasses[badge];
@@ -166,6 +176,7 @@ const User = {
         const user = auth.currentUser;
 
         let valid = true;
+
         valid = Utils.validateInput(elements.newDisplayName, newName.length < 3 || newName.length > 16) && valid;
         valid = Utils.validateInput(elements.newBio, newBio.length > 500) && valid;
         valid = Utils.validateInput(elements.newLocation, newLocation.length > 50) && valid;
@@ -178,38 +189,52 @@ const User = {
                 alert("Display name is already taken. Please choose another one.");
                 return;
             }
+
             const updates = { displayName: newName, bio: newBio, location: newLocation };
             User.updateUserProfile(user, updates);
         }).catch(Utils.handleFirebaseError);
     },
     updateMessageNames: (uid, newName) => {
         const batch = db.batch();
+
         const globalMessagesPromise = db.collection('messages').where('uid', '==', uid).get().then(snapshot => {
-            snapshot.forEach(doc => batch.update(doc.ref, { name: newName }));
+            snapshot.forEach(doc => {
+                batch.update(doc.ref, { name: newName });
+            });
         });
 
         const dmMessagesPromise = db.collection('dms').where('participants', 'array-contains', uid).get().then(snapshot => {
             const updatePromises = [];
+
             snapshot.forEach(dmDoc => {
                 const dmId = dmDoc.id;
                 const messagesRef = db.collection('dms').doc(dmId).collection('messages');
-                updatePromises.push(messagesRef.where('uid', '==', uid).get().then(messagesSnapshot => {
-                    messagesSnapshot.forEach(messageDoc => batch.update(messageDoc.ref, { name: newName }));
-                }));
+
+                const updatePromise = messagesRef.where('uid', '==', uid).get().then(messagesSnapshot => {
+                    messagesSnapshot.forEach(messageDoc => {
+                        batch.update(messageDoc.ref, { name: newName });
+                    });
+                });
+
+                updatePromises.push(updatePromise);
             });
+
             return Promise.all(updatePromises);
         });
 
-        Promise.all([globalMessagesPromise, dmMessagesPromise]).then(() => batch.commit())
-            .then(() => {
-                User.loadProfile();
-                Utils.toggleOffcanvas('offcanvasExample', false);
-            }).catch(Utils.handleFirebaseError);
+        Promise.all([globalMessagesPromise, dmMessagesPromise]).then(() => {
+            return batch.commit();
+        }).then(() => {
+            User.loadProfile();
+            Utils.hideOffcanvas('offcanvasExample');
+        }).catch(Utils.handleFirebaseError);
     },
     updateUserProfile: (user, updates) => {
-        user.updateProfile({ displayName: updates.displayName }).then(() => db.collection('users').doc(user.uid).set(updates, { merge: true }))
-            .then(() => User.updateMessageNames(user.uid, updates.displayName))
-            .catch(Utils.handleFirebaseError);
+        user.updateProfile({ displayName: updates.displayName }).then(() => {
+            return db.collection('users').doc(user.uid).set(updates, { merge: true });
+        }).then(() => {
+            User.updateMessageNames(user.uid, updates.displayName);
+        }).catch(Utils.handleFirebaseError);
     },
 };
 
@@ -231,8 +256,9 @@ const Chat = {
                 uid: auth.currentUser.uid,
                 name: auth.currentUser.displayName,
                 timestamp: firebase.firestore.Timestamp.now()
-            }).then(() => elements.chatInput.value = '')
-                .catch(Utils.handleFirebaseError);
+            }).then(() => {
+                elements.chatInput.value = '';
+            }).catch(Utils.handleFirebaseError);
         }
     },
     parseMessageText: (text) => {
@@ -269,7 +295,8 @@ const Chat = {
             elements.chatBox.innerHTML = '';
             snapshot.forEach(doc => {
                 const message = doc.data();
-                elements.chatBox.appendChild(Chat.createMessageElement(message, doc.id));
+                const messageElement = Chat.createMessageElement(message, doc.id, false);
+                elements.chatBox.appendChild(messageElement);
             });
             Chat.addUsernameClickListeners();
             elements.chatBox.scrollTop = elements.chatBox.scrollHeight;
@@ -454,33 +481,15 @@ const DM = {
 };
 
 // Event Listeners
-document.addEventListener('click', function (event) {
-    if (event.target.matches('#login-button')) {
-        Auth.login();
-    } else if (event.target.matches('#logout-button')) {
-        Auth.logout();
-    } else if (event.target.matches('#send-button')) {
-        Chat.sendMessage();
-    } else if (event.target.matches('#save-settings-button')) {
-        User.saveSettings();
-    } else if (event.target.matches('#global-chat-button')) {
-        Chat.showGlobalChat();
-    } else if (event.target.matches('#dms-button')) {
-        DM.showDms();
-    } else if (event.target.matches('#dm-send-button')) {
-        DM.sendDmMessage();
-    } else if (event.target.matches('.edit-button')) {
-        const messageId = event.target.dataset.messageId;
-        const isDm = event.target.dataset.isDm === 'true';
-        Chat.editMessage(messageId, isDm);
-    } else if (event.target.matches('.delete-button')) {
-        const messageId = event.target.dataset.messageId;
-        const isDm = event.target.dataset.isDm === 'true';
-        Chat.deleteMessage(messageId, isDm);
-    }
-});
-
+elements.loginButton?.addEventListener('click', Auth.login);
+elements.logoutButton?.addEventListener('click', Auth.logout);
+elements.sendButton?.addEventListener('click', Chat.sendMessage);
+elements.saveSettingsButton?.addEventListener('click', User.saveSettings);
+elements.globalChatButton?.addEventListener('click', Chat.showGlobalChat);
+elements.dmsButton?.addEventListener('click', DM.showDms);
+elements.dmSendButton?.addEventListener('click', DM.sendDmMessage);
 elements.dmSearchInput?.addEventListener('input', () => DM.loadDms(elements.dmSearchInput.value.toLowerCase()));
+
 auth.onAuthStateChanged(Auth.handleAuthStateChanged);
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -500,5 +509,18 @@ document.addEventListener('DOMContentLoaded', function () {
             const format = event.target.closest('.format-example').getAttribute('data-format');
             insertFormat(format);
         });
+    });
+
+    document.addEventListener('click', function (event) {
+        if (event.target.matches('.edit-button')) {
+            const messageId = event.target.dataset.messageId;
+            const messageText = document.getElementById(`message-text-${messageId}`).innerText;
+            const isDm = event.target.dataset.isDm === 'true';
+            Chat.editMessage(messageId, isDm);
+        } else if (event.target.matches('.delete-button')) {
+            const messageId = event.target.dataset.messageId;
+            const isDm = event.target.dataset.isDm === 'true';
+            Chat.deleteMessage(messageId, isDm);
+        }
     });
 });
