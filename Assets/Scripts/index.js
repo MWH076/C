@@ -350,8 +350,8 @@ const Chat = {
                                     <i class="ph ph-toolbox text-md me-3"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="#!" class="dropdown-item edit-button" data-message-id="${messageId}" data-is-dm="${isDm}">Edit</a>
-                                    <a href="#!" class="dropdown-item delete-button" data-message-id="${messageId}" data-is-dm="${isDm}">Delete</a>
+                                    <button class="dropdown-item edit-button" data-message-id="${messageId}" data-is-dm="${isDm}">Edit</button>
+                                    <button class="dropdown-item delete-button" data-message-id="${messageId}" data-is-dm="${isDm}">Delete</button>
                                 </div>
                             </div>
                         </div>
