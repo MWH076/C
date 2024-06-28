@@ -245,7 +245,7 @@ const User = {
         const points = Math.ceil(Math.random() * 15);
         const userRef = db.collection('users').doc(uid);
 
-        try { 
+        try {
             await db.runTransaction(async (transaction) => {
                 const doc = await transaction.get(userRef);
 
