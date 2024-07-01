@@ -383,15 +383,20 @@ const Chat = {
     },
     editMessage: (messageId, isDm = false) => {
         const messageElement = document.getElementById(`message-text-${messageId}`);
-        const currentText = messageElement.innerText;
+        const currentHtml = messageElement.innerHTML;
+        const temporaryElement = document.createElement('div');
+        temporaryElement.innerHTML = currentHtml;
+        const currentText = temporaryElement.innerText;
+
         let newText = prompt("Edit your message:", currentText);
         if (newText !== null && newText.trim() !== '') {
+            const parsedText = Chat.parseMessageText(newText.trim());
             const collection = isDm ? 'dms' : 'messages';
             const dmId = isDm ? DM.createDmId(auth.currentUser.uid, DM.currentDmUserId) : null;
             const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
 
             docRef.update({
-                text: newText.trim(),
+                text: parsedText,
                 isEdited: true
             }).catch(Utils.handleFirebaseError);
         }
