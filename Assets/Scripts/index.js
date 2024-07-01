@@ -31,21 +31,38 @@ const badgeClasses = {
 };
 
 // DOM elements
-const elementIds = [
-    'login-button', 'logout-button', 'send-button', 'save-settings-button',
-    'login-container', 'chat-container', 'chat-input', 'chat-box',
-    'profile-pic', 'display-name', 'dropdown-username', 'new-display-name',
-    'new-bio', 'new-location', 'global-chat-button', 'dms-button',
-    'global-chat', 'dm-container', 'dm-list', 'dm-chat-box',
-    'dm-chat-input', 'dm-send-button', 'dm-search-input', 'user-level',
-    'user-experience', 'profile-display-name', 'profile-bio', 'profile-location',
-    'profile-badges', 'dm-button'
-];
-
-const elements = elementIds.reduce((acc, id) => {
-    acc[id] = document.getElementById(id);
-    return acc;
-}, {});
+const elements = {
+    loginButton: document.getElementById('login-button'),
+    logoutButton: document.getElementById('logout-button'),
+    sendButton: document.getElementById('send-button'),
+    saveSettingsButton: document.getElementById('save-settings-button'),
+    loginContainer: document.getElementById('login-container'),
+    chatContainer: document.getElementById('chat-container'),
+    chatInput: document.getElementById('chat-input'),
+    chatBox: document.getElementById('chat-box'),
+    profilePic: document.getElementById('profile-pic'),
+    displayName: document.getElementById('display-name'),
+    dropdownUsername: document.getElementById('dropdown-username'),
+    newDisplayName: document.getElementById('new-display-name'),
+    newBio: document.getElementById('new-bio'),
+    newLocation: document.getElementById('new-location'),
+    globalChatButton: document.getElementById('global-chat-button'),
+    dmsButton: document.getElementById('dms-button'),
+    globalChat: document.getElementById('global-chat'),
+    dmContainer: document.getElementById('dm-container'),
+    dmList: document.getElementById('dm-list'),
+    dmChatBox: document.getElementById('dm-chat-box'),
+    dmChatInput: document.getElementById('dm-chat-input'),
+    dmSendButton: document.getElementById('dm-send-button'),
+    dmSearchInput: document.getElementById('dm-search-input'),
+    userLevel: document.getElementById('user-level'),
+    userExpierence: document.getElementById('user-experience'),
+    profileDisplayName: document.getElementById('profile-display-name'),
+    profileBio: document.getElementById('profile-bio'),
+    profileLocation: document.getElementById('profile-location'),
+    profileBadges: document.getElementById('profile-badges'),
+    dmButton: document.getElementById('dm-button'),
+};
 
 // Utility functions
 const Utils = {
