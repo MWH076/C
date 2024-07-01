@@ -345,18 +345,12 @@ const Chat = {
 
         messageElement.innerHTML = `
             <div class="flex-1">
-                <div class="mb-1">
-                    <div class="me-4">
-                        <img src="./Assets/Images/Emojis/06.png" class="avatar rounded-circle">
-                    </div>
+                <div class="d-flex align-items-center mb-1">
                     <a href="#" class="d-block h6 chat-username" data-uid="${message.uid}">${message.name}</a>
                     <span class="text-muted text-xs ms-2">${timeString}</span>
                     ${message.isEdited && !message.isDeleted ? '<span class="text-muted text-xs ms-2"><em>Edited</em></span>' : ''}
                     ${auth.currentUser && auth.currentUser.uid === message.uid && !message.isDeleted ? `
                         <div class="ms-auto text-end">
-                            <div>
-                                <span class="badge bg-indigo-200 text-primary rounded-pill"><em>Edited</em></span>
-                            </div>
                             <div class="dropdown">
                                 <a class="text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="ph ph-toolbox text-md me-3"></i>
@@ -369,7 +363,9 @@ const Chat = {
                         </div>
                         ` : ''}
                 </div>
-                <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
+                <div class="d-flex align-items-center">
+                    <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
+                </div>
             </div>
         `;
         return messageElement;
