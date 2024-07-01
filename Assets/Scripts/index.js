@@ -155,6 +155,8 @@ const User = {
                 elements.profileBio.innerText = userData.bio || 'Bio pending approval from my cat. Meow back later!';
                 elements.profileLocation.innerText = userData.location || 'No location yet, exploring Earth!';
                 elements.profileBadges.innerHTML = userData.badges.map(User.createBadge).join(' ');
+                elements.userLevel.innerText = userData.level || 1;
+                elements.userExpierence.innerText = userData.experience || 0;
                 Utils.openOffcanvas(PROFILE_MODAL_ID);
 
                 elements.dmButton.addEventListener('click', () => {
