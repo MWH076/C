@@ -369,9 +369,7 @@ const Chat = {
                         </div>
                         ` : ''}
                 </div>
-                <div class="d-flex align-items-center">
-                    <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
-                </div>
+                <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
             </div>
         `;
         return messageElement;
