@@ -274,7 +274,7 @@ const Chat = {
         Utils.toggleVisibility(elements.globalChat, true);
     },
     sendMessage: () => {
-        const messageText = Chat.parseMessageText(elements.chatInput.value.trim());
+        const messageText = elements.chatInput.value.trim();
         if (messageText.length > MESSAGE_LIMIT) {
             alert(`Message is too long. Please keep it under ${MESSAGE_LIMIT} characters.`);
             return;
@@ -314,11 +314,11 @@ const Chat = {
             { regex: /\(\+D\)/g, replacement: '<img src="./Assets/Images/Emojis/06.png" class="mikemoji" alt="(+D)">' },
             { regex: /(https?:\/\/[^\s]+)/g, replacement: '<a href="$1" target="_blank">$1</a>' }
         ];
-
+    
         replacements.forEach(({ regex, replacement }) => {
             text = text.replace(regex, replacement);
         });
-
+    
         return text;
     },
     loadMessages: () => {
@@ -336,14 +336,14 @@ const Chat = {
     createMessageElement: (message, messageId, isDm = false) => {
         const timestamp = new Date(message.timestamp.seconds * 1000);
         const timeString = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })} - ${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
-
+    
         const messageElement = document.createElement('div');
         messageElement.classList.add('list-group-item', 'px-0', 'position-relative', 'hstack', 'flex-wrap', 'chat-message');
-        let messageContent = message.text;
+        let messageContent = Chat.parseMessageText(message.text);
         if (message.isDeleted) {
             messageContent = '<span class="text-red-300 font-italic">Poof! Message gone</span>';
         }
-
+    
         messageElement.innerHTML = `
             <div class="flex-1">
                 <div class="d-flex align-items-center mb-1">
@@ -365,7 +365,7 @@ const Chat = {
                         ` : ''}
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
+                    <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}" data-original-text="${message.text}">${messageContent}</div>
                 </div>
             </div>
         `;
@@ -383,20 +383,16 @@ const Chat = {
     },
     editMessage: (messageId, isDm = false) => {
         const messageElement = document.getElementById(`message-text-${messageId}`);
-        const currentHtml = messageElement.innerHTML;
-        const temporaryElement = document.createElement('div');
-        temporaryElement.innerHTML = currentHtml;
-        const currentText = temporaryElement.innerText;
-
+        const currentText = messageElement.getAttribute('data-original-text');
+    
         let newText = prompt("Edit your message:", currentText);
         if (newText !== null && newText.trim() !== '') {
-            const parsedText = Chat.parseMessageText(newText.trim());
             const collection = isDm ? 'dms' : 'messages';
             const dmId = isDm ? DM.createDmId(auth.currentUser.uid, DM.currentDmUserId) : null;
             const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
-
+    
             docRef.update({
-                text: parsedText,
+                text: newText.trim(),
                 isEdited: true
             }).catch(Utils.handleFirebaseError);
         }
