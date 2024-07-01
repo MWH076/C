@@ -31,46 +31,6 @@ const badgeClasses = {
 };
 
 // DOM elements
-// Original method
-const originalStartTime = performance.now();
-const elementsOriginal = {
-    loginButton: document.getElementById('login-button'),
-    logoutButton: document.getElementById('logout-button'),
-    sendButton: document.getElementById('send-button'),
-    saveSettingsButton: document.getElementById('save-settings-button'),
-    loginContainer: document.getElementById('login-container'),
-    chatContainer: document.getElementById('chat-container'),
-    chatInput: document.getElementById('chat-input'),
-    chatBox: document.getElementById('chat-box'),
-    profilePic: document.getElementById('profile-pic'),
-    displayName: document.getElementById('display-name'),
-    dropdownUsername: document.getElementById('dropdown-username'),
-    newDisplayName: document.getElementById('new-display-name'),
-    newBio: document.getElementById('new-bio'),
-    newLocation: document.getElementById('new-location'),
-    globalChatButton: document.getElementById('global-chat-button'),
-    dmsButton: document.getElementById('dms-button'),
-    globalChat: document.getElementById('global-chat'),
-    dmContainer: document.getElementById('dm-container'),
-    dmList: document.getElementById('dm-list'),
-    dmChatBox: document.getElementById('dm-chat-box'),
-    dmChatInput: document.getElementById('dm-chat-input'),
-    dmSendButton: document.getElementById('dm-send-button'),
-    dmSearchInput: document.getElementById('dm-search-input'),
-    userLevel: document.getElementById('user-level'),
-    userExpierence: document.getElementById('user-experience'),
-    profileDisplayName: document.getElementById('profile-display-name'),
-    profileBio: document.getElementById('profile-bio'),
-    profileLocation: document.getElementById('profile-location'),
-    profileBadges: document.getElementById('profile-badges'),
-    dmButton: document.getElementById('dm-button'),
-};
-const originalEndTime = performance.now();
-
-console.log(`Original method time: ${originalEndTime - originalStartTime} ms`);
-
-// Simplified method
-const simplifiedStartTime = performance.now();
 const elementIds = [
     'login-button', 'logout-button', 'send-button', 'save-settings-button',
     'login-container', 'chat-container', 'chat-input', 'chat-box',
@@ -82,13 +42,10 @@ const elementIds = [
     'profile-badges', 'dm-button'
 ];
 
-const elementsSimplified = elementIds.reduce((acc, id) => {
+const elements = elementIds.reduce((acc, id) => {
     acc[id] = document.getElementById(id);
     return acc;
 }, {});
-const simplifiedEndTime = performance.now();
-
-console.log(`Simplified method time: ${simplifiedEndTime - simplifiedStartTime} ms`);
 
 // Utility functions
 const Utils = {
