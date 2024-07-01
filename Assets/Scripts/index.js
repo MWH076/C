@@ -345,7 +345,7 @@ const Chat = {
 
         messageElement.innerHTML = `
             <div class="flex-1">
-                <div class="d-flex align-items-center mb-1">
+                <div class="mb-1">
                     <div class="me-4">
                         <img src="./Assets/Images/Emojis/06.png" class="avatar rounded-circle">
                     </div>
