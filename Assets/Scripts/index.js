@@ -367,14 +367,32 @@ const Chat = {
                     <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
                 </div>
             </div>-->
-            <div class="d-flex align-items-center gap-3 ps-1">
-                <div class="text-base">
-                    <div class="icon icon-shape w-rem-10 h-rem-10 rounded-circle text-sm bg-primary bg-opacity-25 text-tertiary">
-                        <i class="ph ph-user"></i>
+            <div class="list-group-item d-flex align-items-center">
+                <div class="me-4">
+                    <img src="./Assets/Images/Emojis/06.png" class="avatar rounded-circle">
+                </div>
+                <div class="flex-fill">
+                    <a href="#" class="d-block text-sm text-heading text-primary-hover fw-semibold">
+                        ${message.name}
+                    </a>
+                    <span class="d-block text-xs text-muted">
+                        ${messageContent}
+                    </span>
+                </div>
+                <div class="ms-auto d-flex gap-4 align-items-center">
+                    <div>
+                        <span class="badge bg-primary-subtle text-primary rounded-pill"><em>Edited</em></span>
                     </div>
-                <div>
-                <span class="d-block text-heading fw-bold">${message.name}</span>
-                <span class="text-xs text-muted">${messageContent}</span>
+                    <div class="dropdown">
+                        <a class="text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="#!" class="dropdown-item">Edit</a>
+                            <a href="#!" class="dropdown-item">Delete</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
         return messageElement;
