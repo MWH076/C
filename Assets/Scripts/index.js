@@ -31,31 +31,21 @@ const badgeClasses = {
 };
 
 // DOM elements
-const elements = {
-    loginButton: document.getElementById('login-button'),
-    logoutButton: document.getElementById('logout-button'),
-    sendButton: document.getElementById('send-button'),
-    saveSettingsButton: document.getElementById('save-settings-button'),
-    loginContainer: document.getElementById('login-container'),
-    chatContainer: document.getElementById('chat-container'),
-    chatInput: document.getElementById('chat-input'),
-    chatBox: document.getElementById('chat-box'),
-    profilePic: document.getElementById('profile-pic'),
-    displayName: document.getElementById('display-name'),
-    dropdownUsername: document.getElementById('dropdown-username'),
-    newDisplayName: document.getElementById('new-display-name'),
-    newBio: document.getElementById('new-bio'),
-    newLocation: document.getElementById('new-location'),
-    globalChatButton: document.getElementById('global-chat-button'),
-    dmsButton: document.getElementById('dms-button'),
-    globalChat: document.getElementById('global-chat'),
-    dmContainer: document.getElementById('dm-container'),
-    dmList: document.getElementById('dm-list'),
-    dmChatBox: document.getElementById('dm-chat-box'),
-    dmChatInput: document.getElementById('dm-chat-input'),
-    dmSendButton: document.getElementById('dm-send-button'),
-    dmSearchInput: document.getElementById('dm-search-input'),
-};
+const elementIds = [
+    'login-button', 'logout-button', 'send-button', 'save-settings-button',
+    'login-container', 'chat-container', 'chat-input', 'chat-box',
+    'profile-pic', 'display-name', 'dropdown-username', 'new-display-name',
+    'new-bio', 'new-location', 'global-chat-button', 'dms-button',
+    'global-chat', 'dm-container', 'dm-list', 'dm-chat-box',
+    'dm-chat-input', 'dm-send-button', 'dm-search-input', 'user-level',
+    'user-experience', 'profile-display-name', 'profile-bio', 'profile-location',
+    'profile-badges', 'dm-button'
+];
+
+const elements = elementIds.reduce((acc, id) => {
+    acc[id] = document.getElementById(id);
+    return acc;
+}, {});
 
 // Utility functions
 const Utils = {
@@ -131,9 +121,8 @@ const User = {
                 elements.newDisplayName.value = displayName;
                 elements.newBio.value = userData.bio || '';
                 elements.newLocation.value = userData.location || '';
-
-                document.getElementById('user-level').innerText = userData.level || 1;
-                document.getElementById('user-experience').innerText = userData.experience || 0;
+                elements.userLevel.innerText = userData.level || 1;
+                elements.userExpierence.innerText = userData.experience || 0;
             } else {
                 console.log("No such user document!");
             }
@@ -145,14 +134,13 @@ const User = {
         userRef.get().then(doc => {
             if (doc.exists) {
                 const userData = doc.data();
-                document.getElementById('profile-display-name').innerText = userData.displayName;
-                document.getElementById('profile-bio').innerText = userData.bio || 'Bio pending approval from my cat. Meow back later!';
-                document.getElementById('profile-location').innerText = userData.location || 'No location yet, exploring Earth!';
-                document.getElementById('profile-badges').innerHTML = userData.badges.map(User.createBadge).join(' ');
-
+                elements.profileDisplayName.innerText = userData.displayName;
+                elements.profileBio.innerText = userData.bio || 'Bio pending approval from my cat. Meow back later!';
+                elements.profileLocation.innerText = userData.location || 'No location yet, exploring Earth!';
+                elements.profileBadges.innerHTML = userData.badges.map(User.createBadge).join(' ');
                 Utils.openOffcanvas(PROFILE_MODAL_ID);
 
-                document.getElementById('dm-button').addEventListener('click', () => {
+                elements.dmButton.addEventListener('click', () => {
                     User.handleProfileDmButtonClick(uid);
                     Utils.closeOffcanvas(PROFILE_MODAL_ID);
                 });
