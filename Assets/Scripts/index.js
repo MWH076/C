@@ -20,6 +20,7 @@ const db = firebase.firestore();
 // Constants
 const MESSAGE_LIMIT = 5000;
 const PROFILE_MODAL_ID = 'profile_modal';
+const MESSAGE_MODAL_ID = 'message_modal';
 const badgeClasses = {
     'Administrator': 'bg-red-500 ph-shield-star',
     'Moderator': 'bg-pink-500 ph-gavel',
@@ -369,6 +370,9 @@ const Chat = {
             </div>
         `;
         return messageElement;
+    },
+    showMessageModal: () => {
+        Utils.openOffcanvas(MESSAGE_MODAL_ID);
     },
     deleteMessage: (messageId, isDm = false) => {
         const collection = isDm ? 'dms' : 'messages';
