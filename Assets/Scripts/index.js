@@ -359,6 +359,7 @@ const Chat = {
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <button class="dropdown-item edit-button" data-message-id="${messageId}" data-is-dm="${isDm}">Edit</button>
                                     <button class="dropdown-item delete-button" data-message-id="${messageId}" data-is-dm="${isDm}">Delete</button>
+                                    <button class="dropdown-item info-button" data-message-id="${messageId}" data-is-dm="${isDm}">Information</button>
                                 </div>
                             </div>
                         </div>
