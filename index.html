@@ -36,10 +36,10 @@
                 <div class="row justify-content-md-center">
                     <div class="col-md-10 col-xl-8 text-md-center">
                         <div>
-                            <h1 class="ls-tight font-bolder display-3 text-light mb-7">
+                            <h1 class="ls-tight font-bolder display-3 text-white mb-7">
                                 Chat, Discover, Connect
                             </h1>
-                            <p class="lead text-light text-opacity-75 mb-10">
+                            <p class="lead text-white text-opacity-75 mb-10">
                                 With easy messaging, a user-friendly interface, and reliable performance, our chat app
                                 makes it simple to meet new people. Just log in with Google, join the chat, and if you
                                 like someone's vibe, click on their profile to DM them. No friending, no hassle, no
@@ -58,11 +58,11 @@
         </div>
     </div>
 
-    <main class="py-10 bg-dark">
+    <main class="py-10 bg-surface-secondary">
         <div class="container-xl">
-            <div class="card d-none bg-dark" id="chat-container">
+            <div class="card d-none" id="chat-container">
                 <div class="card-header d-flex align-items-center">
-                    <h5 class="me-auto text-light">D2 By Mike</h5>
+                    <h5 class="me-auto">D2 By Mike</h5>
                     <div class="me-auto">
                         <div class="hstack gap-2">
                             <button id="global-chat-button" type="button"
@@ -79,12 +79,12 @@
                         <a class="d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown"
                             aria-haspopup="false" aria-expanded="false">
                             <div>
-                                <div class="avatar avatar-sm bg-indigo-500 rounded-circle text-light">
+                                <div class="avatar avatar-sm bg-indigo-500 rounded-circle text-white">
                                     <img alt="" id="profile-pic">
                                 </div>
                             </div>
                             <div class="d-none d-sm-block ms-3">
-                                <span class="h6 text-light" id="display-name">Username</span>
+                                <span class="h6" id="display-name">Username</span>
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
@@ -108,32 +108,32 @@
 
             <!-- Global Chat Container -->
             <div id="global-chat" class="d-none">
-                <div class="card h-lg-full mt-4 bg-dark">
+                <div class="card h-lg-full mt-4">
                     <div class="card-body py-0 position-relative">
                         <div class="list-group list-group-flush" id="chat-box">
                             <!-- Chat messages will dynamically appear here -->
                         </div>
                     </div>
                 </div>
-                <div class="card mt-4 bg-dark">
+                <div class="card mt-4">
                     <div>
                         <div class="textarea-autosize p-6" data-replicated-value="">
-                            <textarea id="chat-input" class="form-control border-0 shadow-none p-0 text-white bg-dark" rows="2"
+                            <textarea id="chat-input" class="form-control border-0 shadow-none p-0" rows="2"
                                 placeholder="Type your message..."
                                 oninput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                         </div>
                         <div class="d-flex align-items-center px-6 py-3 border-top">
                             <div class="flex-fill d-flex align-items-center">
-                                <h6 class="font-semibold text-xs text-light text-opacity-70"><i
+                                <h6 class="font-semibold text-xs text-muted text-opacity-70"><i
                                         class="ph ph-copyright"></i> Copyright Mike 2024</h6>
                             </div>
                             <div class="text-end">
                                 <div class="hstack gap-5 align-items-center">
-                                    <a href="#!" class="text-lg text-light text-primary-hover"
+                                    <a href="#!" class="text-lg text-muted text-primary-hover"
                                         data-bs-toggle="offcanvas" data-bs-target="#format-help-modal">
                                         <i class="ph ph-text-align-left"></i>
                                     </a>
-                                    <a href="#!" class="text-lg text-light text-primary-hover" id="send-button">
+                                    <a href="#!" class="text-lg text-muted text-primary-hover" id="send-button">
                                         <i class="ph ph-paper-plane-right"></i>
                                     </a>
                                 </div>

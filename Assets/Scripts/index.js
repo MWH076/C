@@ -348,14 +348,14 @@ const Chat = {
     
         messageElement.innerHTML = `
             <div class="flex-1">
-                <div class="d-flex align-items-center mb-1 bg-dark">
-                    <a href="#" class="d-block h6 text-light chat-username" data-uid="${message.uid}">${message.name}</a>
-                    <span class="text-light text-xs ms-2">${timeString}</span>
-                    ${message.isEdited && !message.isDeleted ? '<span class="text-light text-xs ms-2"><em>Edited</em></span>' : ''}
+                <div class="d-flex align-items-center mb-1">
+                    <a href="#" class="d-block h6 chat-username" data-uid="${message.uid}">${message.name}</a>
+                    <span class="text-muted text-xs ms-2">${timeString}</span>
+                    ${message.isEdited && !message.isDeleted ? '<span class="text-muted text-xs ms-2"><em>Edited</em></span>' : ''}
                     ${auth.currentUser && auth.currentUser.uid === message.uid && !message.isDeleted ? `
                         <div class="ms-auto text-end">
                             <div class="dropdown">
-                                <a class="text-light" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="ph ph-toolbox text-md me-3"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
@@ -367,7 +367,7 @@ const Chat = {
                         ` : ''}
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="w-3/4 text-sm text-light me-auto" id="message-text-${messageId}" data-original-text="${message.text}">${messageContent}</div>
+                    <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}" data-original-text="${message.text}">${messageContent}</div>
                 </div>
             </div>
         `;
