@@ -63,6 +63,7 @@ const elements = {
     profileLocation: document.getElementById('profile-location'),
     profileBadges: document.getElementById('profile-badges'),
     dmButton: document.getElementById('dm-button'),
+    messageModal: document.getElementById(MESSAGE_MODAL_ID)
 };
 
 // Utility functions
