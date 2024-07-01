@@ -20,7 +20,6 @@ const db = firebase.firestore();
 // Constants
 const MESSAGE_LIMIT = 5000;
 const PROFILE_MODAL_ID = 'profile_modal';
-const MESSAGE_MODAL_ID = 'message_modal';
 const badgeClasses = {
     'Administrator': 'bg-red-500 ph-shield-star',
     'Moderator': 'bg-pink-500 ph-gavel',
@@ -63,7 +62,6 @@ const elements = {
     profileLocation: document.getElementById('profile-location'),
     profileBadges: document.getElementById('profile-badges'),
     dmButton: document.getElementById('dm-button'),
-    messageModal: document.getElementById(MESSAGE_MODAL_ID)
 };
 
 // Utility functions
@@ -360,7 +358,6 @@ const Chat = {
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <button class="dropdown-item edit-button" data-message-id="${messageId}" data-is-dm="${isDm}">Edit</button>
                                     <button class="dropdown-item delete-button" data-message-id="${messageId}" data-is-dm="${isDm}">Delete</button>
-                                    <button class="dropdown-item info-button" data-message-id="${messageId}" data-is-dm="${isDm}">Information</button>
                                 </div>
                             </div>
                         </div>
@@ -372,34 +369,6 @@ const Chat = {
             </div>
         `;
         return messageElement;
-    },
-    showMessageModal: (messageId, isDm) => {
-        const collection = isDm ? 'dms' : 'messages';
-        const dmId = isDm ? DM.createDmId(auth.currentUser.uid, DM.currentDmUserId) : null;
-        const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
-
-        docRef.get().then(doc => {
-            if (doc.exists) {
-                const message = doc.data();
-                const timestamp = new Date(message.timestamp.seconds * 1000);
-                const timeString = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })} - ${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
-                elements.messageModal.innerHTML = `
-                    <div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
-                        <h5 class="offcanvas-title">Message Information</h5>
-                        <button type="button" class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body vstack gap-5">
-                        <p><strong>Sender:</strong> ${message.name}</p>
-                        <p><strong>Timestamp:</strong> ${timeString}</p>
-                        ${message.isEdited ? '<p><strong>Status:</strong> Edited</p>' : ''}
-                        ${message.isDeleted ? '<p><strong>Status:</strong> Deleted</p>' : `<p><strong>Message:</strong> ${message.text}</p>`}
-                    </div>
-                `;
-                Utils.openOffcanvas(MESSAGE_MODAL_ID);
-            } else {
-                console.error("No such message!");
-            }
-        }).catch(Utils.handleFirebaseError);
     },
     deleteMessage: (messageId, isDm = false) => {
         const collection = isDm ? 'dms' : 'messages';
@@ -575,16 +544,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('click', function (event) {
         if (event.target.matches('.edit-button')) {
             const messageId = event.target.dataset.messageId;
+            const messageText = document.getElementById(`message-text-${messageId}`).innerText;
             const isDm = event.target.dataset.isDm === 'true';
             Chat.editMessage(messageId, isDm);
         } else if (event.target.matches('.delete-button')) {
             const messageId = event.target.dataset.messageId;
             const isDm = event.target.dataset.isDm === 'true';
             Chat.deleteMessage(messageId, isDm);
-        } else if (event.target.matches('.info-button')) {
-            const messageId = event.target.dataset.messageId;
-            const isDm = event.target.dataset.isDm === 'true';
-            Chat.showMessageModal(messageId, isDm);
         }
     });
 });
