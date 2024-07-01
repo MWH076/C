@@ -344,7 +344,7 @@ const Chat = {
         }
 
         messageElement.innerHTML = `
-            <div class="flex-1">
+            <!--<div class="flex-1">
                 <div class="d-flex align-items-center mb-1">
                     <a href="#" class="d-block h6 chat-username" data-uid="${message.uid}">${message.name}</a>
                     <span class="text-muted text-xs ms-2">${timeString}</span>
@@ -366,6 +366,15 @@ const Chat = {
                 <div class="d-flex align-items-center">
                     <div class="w-3/4 text-sm text-muted me-auto" id="message-text-${messageId}">${messageContent}</div>
                 </div>
+            </div>-->
+            <div class="d-flex align-items-center gap-3 ps-1">
+                <div class="text-base">
+                    <div class="icon icon-shape w-rem-10 h-rem-10 rounded-circle text-sm bg-primary bg-opacity-25 text-tertiary">
+                        <i class="ph ph-user"></i>
+                    </div>
+                <div>
+                <span class="d-block text-heading fw-bold">${message.name}</span>
+                <span class="text-xs text-muted">${messageContent}</span>
             </div>
         `;
         return messageElement;
