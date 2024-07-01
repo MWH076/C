@@ -311,7 +311,8 @@ const Chat = {
             { regex: /\(:o\)/g, replacement: '<img src="./Assets/Images/Emojis/03.png" class="mikemoji" alt="(:o)">' },
             { regex: /\(:O\)/g, replacement: '<img src="./Assets/Images/Emojis/04.png" class="mikemoji" alt="(:O)">' },
             { regex: /\(<3\)/g, replacement: '<img src="./Assets/Images/Emojis/05.png" class="mikemoji" alt="(<3)">' },
-            { regex: /\(\+D\)/g, replacement: '<img src="./Assets/Images/Emojis/06.png" class="mikemoji" alt="(+D)">' }
+            { regex: /\(\+D\)/g, replacement: '<img src="./Assets/Images/Emojis/06.png" class="mikemoji" alt="(+D)">' },
+            { regex: /(https?:\/\/[^\s]+)/g, replacement: '<a href="$1" target="_blank">$1</a>' }
         ];
 
         replacements.forEach(({ regex, replacement }) => {
