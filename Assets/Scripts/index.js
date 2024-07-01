@@ -73,13 +73,8 @@ const Utils = {
         }
     },
     validateInput: (inputElement, condition) => {
-        if (condition) {
-            inputElement.classList.add('is-invalid');
-            return false;
-        } else {
-            inputElement.classList.remove('is-invalid');
-            return true;
-        }
+        inputElement.classList.toggle('is-invalid', condition);
+        return !condition;
     }
 };
 
