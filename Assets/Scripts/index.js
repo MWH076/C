@@ -174,7 +174,7 @@ const User = {
     },
     createBadge: (badge) => {
         const badgeClass = badgeClasses[badge];
-        return `<span class="d-inline-block cursor-pointer badge ${badgeClass}" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="${badge}"><i class="ph ${badgeClass}"></i></span>`;
+        return `<span class="badge ${badgeClass}" data-toggle="tooltip" data-placement="top" title="${badge}"><i class="ph ${badgeClass}"></i></span>`;
     },
     saveSettings: () => {
         const newName = elements.newDisplayName.value;
