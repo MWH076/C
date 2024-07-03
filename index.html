@@ -218,6 +218,10 @@
                             </div>
                             <div class="dropdown-divider"></div>
                             <button class="dropdown-item d-flex" data-bs-toggle="offcanvas"
+                                data-bs-target="#documents-modal">
+                                <i class="ph ph-gear text-lg me-3"></i>Documents
+                            </button>
+                            <button class="dropdown-item d-flex" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasExample">
                                 <i class="ph ph-gear text-lg me-3"></i>Settings
                             </button>
@@ -328,6 +332,18 @@
             <!-- End of DM Container -->
         </div>
     </main>
+
+    <div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
+        id="documents_modal" aria-labelledby="documents_modal" aria-modal="true" role="dialog">
+        <div class="offcanvas-header border-bottom py-5 bg-surface-secondary">
+            <h5 class="offcanvas-title" id="documents_modal">Documents</h5>
+            <button type="button" class="btn-close text-reset text-xs" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body vstack gap-5">
+            
+        </div>
+    </div>
 
     <div class="offcanvas offcanvas-end w-full w-lg-1/3" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1"
         id="offcanvasExample" aria-labelledby="offcanvasExampleLabel" aria-modal="true" role="dialog">
