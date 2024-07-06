@@ -67,7 +67,8 @@ const elements = {
     moviesChatButton: document.getElementById('movies-chat-button'),
     sportsChatButton: document.getElementById('sports-chat-button'),
     foodChatButton: document.getElementById('food-chat-button'),
-    gamesChatButton: document.getElementById('games-chat-button')
+    gamesChatButton: document.getElementById('games-chat-button'),
+    chatRoomContainer: document.getElementById('chat-room-container')
 };
 
 // Utility functions
@@ -94,6 +95,15 @@ const Utils = {
             Utils.toggleVisibility(document.getElementById(`${room}-chat`), false);
         });
         Utils.toggleVisibility(elements.dmContainer, false);
+    },
+    showChatRoomContainer: (room) => {
+        Utils.hideAllChats();
+        elements.chatBox.id = `${room}-chat-box`;
+        elements.chatInput.id = `${room}-chat-input`;
+        elements.sendButton.id = `${room}-send-button`;
+        elements.chatRoomContainer.classList.remove('d-none');
+        Chat.currentRoom = room;
+        Chat.loadMessages(room);
     }
 };
 
@@ -109,7 +119,7 @@ const Auth = {
             DM.loadDms();
             Utils.toggleVisibility(elements.loginContainer, false);
             Utils.toggleVisibility(elements.chatContainer, true);
-            Chat.showChatRoom('global');
+            Utils.showChatRoomContainer('global');
         } else {
             Utils.toggleVisibility(elements.loginContainer, true);
             Utils.toggleVisibility(elements.chatContainer, false);
@@ -285,9 +295,7 @@ const Chat = {
     currentRoom: 'global',
     showChatRoom: (room) => {
         Utils.hideAllChats();
-        Utils.toggleVisibility(document.getElementById(`${room}-chat`), true);
-        Chat.currentRoom = room;
-        Chat.loadMessages(room);
+        Utils.showChatRoomContainer(room);
     },
     sendMessage: () => {
         const messageText = elements.chatInput.value.trim();
