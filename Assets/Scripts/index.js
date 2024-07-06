@@ -224,9 +224,11 @@ const User = {
     updateMessageNames: (uid, newName) => {
         const batch = db.batch();
 
-        const globalMessagesPromise = db.collection('global').where('uid', '==', uid).get().then(snapshot => {
-            snapshot.forEach(doc => {
-                batch.update(doc.ref, { name: newName });
+        const chatRoomPromises = chatRooms.map(room => {
+            return db.collection(room).where('uid', '==', uid).get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    batch.update(doc.ref, { name: newName });
+                });
             });
         });
 
@@ -249,7 +251,7 @@ const User = {
             return Promise.all(updatePromises);
         });
 
-        Promise.all([globalMessagesPromise, dmMessagesPromise]).then(() => {
+        Promise.all([...chatRoomPromises, dmMessagesPromise]).then(() => {
             return batch.commit();
         }).then(() => {
             User.loadProfile();
