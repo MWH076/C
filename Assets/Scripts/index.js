@@ -49,7 +49,6 @@ const elements = {
     newLocation: document.getElementById('new-location'),
     globalChatButton: document.getElementById('global-chat-button'),
     dmsButton: document.getElementById('dms-button'),
-    globalChat: document.getElementById('global-chat'),
     dmContainer: document.getElementById('dm-container'),
     dmList: document.getElementById('dm-list'),
     dmChatBox: document.getElementById('dm-chat-box'),
@@ -101,7 +100,7 @@ const Utils = {
         elements.chatBox.id = `${room}-chat-box`;
         elements.chatInput.id = `${room}-chat-input`;
         elements.sendButton.id = `${room}-send-button`;
-        elements.chatRoomContainer.classList.remove('d-none');
+        Utils.toggleVisibility(elements.chatRoomContainer, true);
         Chat.currentRoom = room;
         Chat.loadMessages(room);
     }
