@@ -224,35 +224,98 @@
                     <div class="col-lg-4 mt-4">
                         <div class="card">
                             <div class="card-body pb-0">
-                                <div class="hstack gap-2">
-                                    <button id="global-chat-button" type="button"
-                                        class="btn btn-sm btn-square btn-neutral border-dashed shadow-none">
-                                        <i class="ph ph-globe"></i>
-                                    </button>
-                                    <button id="music-chat-button" type="button"
-                                        class="btn btn-sm btn-square btn-neutral border-dashed shadow-none">
-                                        <i class="ph ph-music-notes"></i>
-                                    </button>
-                                    <button id="movies-chat-button" type="button"
-                                        class="btn btn-sm btn-square btn-neutral border-dashed shadow-none">
-                                        <i class="ph ph-film-slate"></i>
-                                    </button>
-                                    <button id="sports-chat-button" type="button"
-                                        class="btn btn-sm btn-square btn-neutral border-dashed shadow-none">
-                                        <i class="ph ph-soccer-ball"></i>
-                                    </button>
-                                    <button id="food-chat-button" type="button"
-                                        class="btn btn-sm btn-square btn-neutral border-dashed shadow-none">
-                                        <i class="ph ph-fork-knife"></i>
-                                    </button>
-                                    <button id="games-chat-button" type="button"
-                                        class="btn btn-sm btn-square btn-neutral border-dashed shadow-none">
-                                        <i class="ph ph-game-controller"></i>
-                                    </button>
-                                    <button id="dms-button" type="button"
-                                        class="btn btn-sm btn-square btn-neutral border-dashed shadow-none">
-                                        <i class="ph ph-chats-teardrop"></i>
-                                    </button>
+                                <div class="list-group list-group-flush">
+                                    <div class="form-item-checkable">
+                                        <input class="form-item-check" type="radio" name="filter-version"
+                                            id="global-chat-button">
+                                        <label class="item w-full" for="global-chat-button">
+                                            <span
+                                                class="form-item-click d-flex align-items-center border border-primary-hover text-heading p-3 rounded-2">
+                                                <i class="ph ph-globe text-lg me-3"></i>
+                                                <span class="text-body text-sm font-semibold">
+                                                    Global
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-item-checkable">
+                                        <input class="form-item-check" type="radio" name="filter-version"
+                                            id="music-chat-button">
+                                        <label class="item w-full" for="music-chat-button">
+                                            <span
+                                                class="form-item-click d-flex align-items-center border border-primary-hover text-heading p-3 rounded-2">
+                                                <i class="ph ph-music-notes text-lg me-3"></i>
+                                                <span class="text-body text-sm font-semibold">
+                                                    Music
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-item-checkable">
+                                        <input class="form-item-check" type="radio" name="filter-version"
+                                            id="movies-chat-button">
+                                        <label class="item w-full" for="movies-chat-button">
+                                            <span
+                                                class="form-item-click d-flex align-items-center border border-primary-hover text-heading p-3 rounded-2">
+                                                <i class="ph ph-film-slate text-lg me-3"></i>
+                                                <span class="text-body text-sm font-semibold">
+                                                    Movies
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-item-checkable">
+                                        <input class="form-item-check" type="radio" name="filter-version"
+                                            id="sports-chat-button">
+                                        <label class="item w-full" for="sports-chat-button">
+                                            <span
+                                                class="form-item-click d-flex align-items-center border border-primary-hover text-heading p-3 rounded-2">
+                                                <i class="ph ph-soccer-ball text-lg me-3"></i>
+                                                <span class="text-body text-sm font-semibold">
+                                                    Sports
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-item-checkable">
+                                        <input class="form-item-check" type="radio" name="filter-version"
+                                            id="food-chat-button">
+                                        <label class="item w-full" for="food-chat-button">
+                                            <span
+                                                class="form-item-click d-flex align-items-center border border-primary-hover text-heading p-3 rounded-2">
+                                                <i class="ph ph-fork-knife text-lg me-3"></i>
+                                                <span class="text-body text-sm font-semibold">
+                                                    Food
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-item-checkable">
+                                        <input class="form-item-check" type="radio" name="filter-version"
+                                            id="games-chat-button">
+                                        <label class="item w-full" for="games-chat-button">
+                                            <span
+                                                class="form-item-click d-flex align-items-center border border-primary-hover text-heading p-3 rounded-2">
+                                                <i class="ph ph-game-controller text-lg me-3"></i>
+                                                <span class="text-body text-sm font-semibold">
+                                                    Games
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-item-checkable">
+                                        <input class="form-item-check" type="radio" name="filter-version"
+                                            id="dms-button">
+                                        <label class="item w-full" for="dms-button">
+                                            <span
+                                                class="form-item-click d-flex align-items-center border border-primary-hover text-heading p-3 rounded-2">
+                                                <i class="ph ph-chats-teardrop text-lg me-3"></i>
+                                                <span class="text-body text-sm font-semibold">
+                                                    DMs
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
