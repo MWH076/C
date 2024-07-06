@@ -28,7 +28,7 @@ const badgeClasses = {
     'Supporter1': 'bg-indigo-500 ph-heart',
     'Veteran': 'bg-orange-500 ph-star',
     'User': 'bg-gray-700 ph-user'
-}; 
+};
 const chatRooms = ['global', 'music', 'movies', 'sports', 'food', 'games'];
 
 // DOM elements
@@ -88,6 +88,12 @@ const Utils = {
     validateInput: (inputElement, condition) => {
         inputElement.classList.toggle('is-invalid', condition);
         return !condition;
+    },
+    hideAllChats: () => {
+        chatRooms.forEach(room => {
+            Utils.toggleVisibility(document.getElementById(`${room}-chat`), false);
+        });
+        Utils.toggleVisibility(elements.dmContainer, false);
     }
 };
 
@@ -107,8 +113,7 @@ const Auth = {
         } else {
             Utils.toggleVisibility(elements.loginContainer, true);
             Utils.toggleVisibility(elements.chatContainer, false);
-            Utils.toggleVisibility(elements.globalChat, false);
-            Utils.toggleVisibility(elements.dmContainer, false);
+            Utils.hideAllChats();
         }
     },
 };
@@ -210,7 +215,7 @@ const User = {
     updateMessageNames: (uid, newName) => {
         const batch = db.batch();
 
-        const globalMessagesPromise = db.collection('messages').where('uid', '==', uid).get().then(snapshot => {
+        const globalMessagesPromise = db.collection('global').where('uid', '==', uid).get().then(snapshot => {
             snapshot.forEach(doc => {
                 batch.update(doc.ref, { name: newName });
             });
@@ -279,9 +284,8 @@ const User = {
 const Chat = {
     currentRoom: 'global',
     showChatRoom: (room) => {
-        chatRooms.forEach(r => {
-            Utils.toggleVisibility(document.getElementById(`${r}-chat`), r === room);
-        });
+        Utils.hideAllChats();
+        Utils.toggleVisibility(document.getElementById(`${room}-chat`), true);
         Chat.currentRoom = room;
         Chat.loadMessages(room);
     },
@@ -326,11 +330,11 @@ const Chat = {
             { regex: /\(\+D\)/g, replacement: '<img src="./Assets/Images/Emojis/06.png" class="mikemoji" alt="(+D)">' },
             { regex: /(https?:\/\/[^\s]+)/g, replacement: '<a href="$1" target="_blank">$1</a>' }
         ];
-    
+
         replacements.forEach(({ regex, replacement }) => {
             text = text.replace(regex, replacement);
         });
-    
+
         return text;
     },
     loadMessages: (room) => {
@@ -348,14 +352,14 @@ const Chat = {
     createMessageElement: (message, messageId, isDm = false) => {
         const timestamp = new Date(message.timestamp.seconds * 1000);
         const timeString = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })} - ${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
-    
+
         const messageElement = document.createElement('div');
         messageElement.classList.add('list-group-item', 'px-0', 'position-relative', 'hstack', 'flex-wrap', 'chat-message');
         let messageContent = Chat.parseMessageText(message.text);
         if (message.isDeleted) {
             messageContent = '<span class="text-red-300 font-italic">Poof! Message gone</span>';
         }
-    
+
         messageElement.innerHTML = `
             <div class="flex-1">
                 <div class="d-flex align-items-center mb-1">
@@ -396,13 +400,13 @@ const Chat = {
     editMessage: (messageId, isDm = false) => {
         const messageElement = document.getElementById(`message-text-${messageId}`);
         const currentText = messageElement.getAttribute('data-original-text');
-    
+
         let newText = prompt("Edit your message:", currentText);
         if (newText !== null && newText.trim() !== '') {
             const collection = isDm ? 'dms' : Chat.currentRoom;
             const dmId = isDm ? DM.createDmId(auth.currentUser.uid, DM.currentDmUserId) : null;
             const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
-    
+
             docRef.update({
                 text: newText.trim(),
                 isEdited: true
@@ -423,7 +427,7 @@ const Chat = {
 const DM = {
     currentDmUserId: null,
     showDms: () => {
-        Utils.toggleVisibility(elements.globalChat, false);
+        Utils.hideAllChats();
         Utils.toggleVisibility(elements.dmContainer, true);
     },
     sendDmMessage: () => {
