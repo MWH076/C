@@ -91,7 +91,7 @@ const Utils = {
     },
     hideAllChats: () => {
         chatRooms.forEach(room => {
-            Utils.toggleVisibility(document.getElementById(`${room}-chat`), false);
+            Utils.toggleVisibility(document.getElementById(`chat-room-container`), false);
         });
         Utils.toggleVisibility(elements.dmContainer, false);
     },
