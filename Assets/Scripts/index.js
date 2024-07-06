@@ -29,6 +29,7 @@ const badgeClasses = {
     'Veteran': 'bg-orange-500 ph-star',
     'User': 'bg-gray-700 ph-user'
 };
+const chatRooms = ['global', 'music', 'movies', 'sports', 'food', 'games'];
 
 // DOM elements
 const elements = {
@@ -62,6 +63,11 @@ const elements = {
     profileLocation: document.getElementById('profile-location'),
     profileBadges: document.getElementById('profile-badges'),
     dmButton: document.getElementById('dm-button'),
+    musicChatButton: document.getElementById('music-chat-button'),
+    moviesChatButton: document.getElementById('movies-chat-button'),
+    sportsChatButton: document.getElementById('sports-chat-button'),
+    foodChatButton: document.getElementById('food-chat-button'),
+    gamesChatButton: document.getElementById('games-chat-button')
 };
 
 // Utility functions
@@ -93,11 +99,11 @@ const Auth = {
         if (user) {
             User.setupUser(user);
             User.loadProfile();
-            Chat.loadMessages();
+            Chat.loadMessages('global');
             DM.loadDms();
             Utils.toggleVisibility(elements.loginContainer, false);
             Utils.toggleVisibility(elements.chatContainer, true);
-            Chat.showGlobalChat();
+            Chat.showChatRoom('global');
         } else {
             Utils.toggleVisibility(elements.loginContainer, true);
             Utils.toggleVisibility(elements.chatContainer, false);
@@ -271,9 +277,13 @@ const User = {
 
 // Chat Module
 const Chat = {
-    showGlobalChat: () => {
-        Utils.toggleVisibility(elements.dmContainer, false);
-        Utils.toggleVisibility(elements.globalChat, true);
+    currentRoom: 'global',
+    showChatRoom: (room) => {
+        chatRooms.forEach(r => {
+            Utils.toggleVisibility(document.getElementById(`${r}-chat`), r === room);
+        });
+        Chat.currentRoom = room;
+        Chat.loadMessages(room);
     },
     sendMessage: () => {
         const messageText = elements.chatInput.value.trim();
@@ -282,7 +292,7 @@ const Chat = {
             return;
         }
         if (messageText) {
-            db.collection('messages').add({
+            db.collection(Chat.currentRoom).add({
                 text: messageText,
                 uid: auth.currentUser.uid,
                 name: auth.currentUser.displayName,
@@ -323,8 +333,8 @@ const Chat = {
     
         return text;
     },
-    loadMessages: () => {
-        db.collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
+    loadMessages: (room) => {
+        db.collection(room).orderBy('timestamp').onSnapshot(snapshot => {
             elements.chatBox.innerHTML = '';
             snapshot.forEach(doc => {
                 const message = doc.data();
@@ -374,7 +384,7 @@ const Chat = {
         return messageElement;
     },
     deleteMessage: (messageId, isDm = false) => {
-        const collection = isDm ? 'dms' : 'messages';
+        const collection = isDm ? 'dms' : Chat.currentRoom;
         const dmId = isDm ? DM.createDmId(auth.currentUser.uid, DM.currentDmUserId) : null;
         const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
 
@@ -389,7 +399,7 @@ const Chat = {
     
         let newText = prompt("Edit your message:", currentText);
         if (newText !== null && newText.trim() !== '') {
-            const collection = isDm ? 'dms' : 'messages';
+            const collection = isDm ? 'dms' : Chat.currentRoom;
             const dmId = isDm ? DM.createDmId(auth.currentUser.uid, DM.currentDmUserId) : null;
             const docRef = isDm ? db.collection(collection).doc(dmId).collection('messages').doc(messageId) : db.collection(collection).doc(messageId);
     
@@ -519,7 +529,12 @@ elements.loginButton?.addEventListener('click', Auth.login);
 elements.logoutButton?.addEventListener('click', Auth.logout);
 elements.sendButton?.addEventListener('click', Chat.sendMessage);
 elements.saveSettingsButton?.addEventListener('click', User.saveSettings);
-elements.globalChatButton?.addEventListener('click', Chat.showGlobalChat);
+elements.globalChatButton?.addEventListener('click', () => Chat.showChatRoom('global'));
+elements.musicChatButton?.addEventListener('click', () => Chat.showChatRoom('music'));
+elements.moviesChatButton?.addEventListener('click', () => Chat.showChatRoom('movies'));
+elements.sportsChatButton?.addEventListener('click', () => Chat.showChatRoom('sports'));
+elements.foodChatButton?.addEventListener('click', () => Chat.showChatRoom('food'));
+elements.gamesChatButton?.addEventListener('click', () => Chat.showChatRoom('games'));
 elements.dmsButton?.addEventListener('click', DM.showDms);
 elements.dmSendButton?.addEventListener('click', DM.sendDmMessage);
 elements.dmSearchInput?.addEventListener('input', () => DM.loadDms(elements.dmSearchInput.value.toLowerCase()));
