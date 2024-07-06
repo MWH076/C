@@ -28,7 +28,7 @@ const badgeClasses = {
     'Supporter1': 'bg-indigo-500 ph-heart',
     'Veteran': 'bg-orange-500 ph-star',
     'User': 'bg-gray-700 ph-user'
-};
+}; 
 const chatRooms = ['global', 'music', 'movies', 'sports', 'food', 'games'];
 
 // DOM elements
