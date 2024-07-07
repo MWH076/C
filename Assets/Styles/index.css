@@ -3,10 +3,10 @@
     Unauthorized editing, removal, updating, adding, duplicating, selling, or reusing of this code is strictly prohibited.
 */
 
-/*#chat-box, #dm-chat-box {
+#chat-box, #dm-chat-box {
     height: 340px;
     overflow-y: auto;
-}*/
+}
 
 .chat-message {
     white-space: normal;
