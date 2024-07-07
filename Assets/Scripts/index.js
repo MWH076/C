@@ -103,11 +103,6 @@ const Utils = {
         Utils.toggleVisibility(elements.chatRoomContainer, true);
         Chat.currentRoom = room;
         Chat.loadMessages(room);
-        
-        chatRooms.forEach(chatRoom => {
-            document.getElementById(`${chatRoom}-chat-button`).parentNode.classList.remove('border-primary');
-        });
-        document.getElementById(`${room}-chat-button`).parentNode.classList.add('border-primary');
     }
 };
 
@@ -526,11 +521,6 @@ const DM = {
         DM.currentDmUserId = uid;
         DM.loadDmMessages(uid);
         DM.showDms();
-    
-        document.querySelectorAll('#dm-list .form-item-checkable').forEach(dmElement => {
-            dmElement.classList.remove('border-primary');
-        });
-        document.querySelector(`#dmUser_${uid}`).parentNode.classList.add('border-primary');
     },
     loadDmMessages: (uid) => {
         const currentUser = auth.currentUser.uid;
