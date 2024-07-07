@@ -231,7 +231,44 @@
             <!-- Chat Container -->
             <div id="chat-room-container" class="chat-room d-none">
                 <div class="row">
-                    <div class="col-lg-2 mt-4">
+                    <div class="col-lg-8 mt-4">
+                        <div class="card h-lg-full">
+                            <div class="card-body py-0 position-relative">
+                                <div class="list-group list-group-flush" id="chat-box">
+                                    <!-- Chat messages will dynamically appear here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div>
+                                <div class="textarea-autosize p-6" data-replicated-value="">
+                                    <textarea id="chat-input" class="form-control border-0 shadow-none p-0" rows="2"
+                                        placeholder="Type your message..."
+                                        oninput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                                </div>
+                                <div class="d-flex align-items-center px-6 py-3 border-top">
+                                    <div class="flex-fill d-flex align-items-center">
+                                        <h6 class="font-semibold text-xs text-muted text-opacity-70"><i
+                                                class="ph ph-copyright"></i> Copyright Mike 2024</h6>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="hstack gap-5 align-items-center">
+                                            <a href="#!" class="text-lg text-muted text-primary-hover"
+                                                data-bs-toggle="offcanvas" data-bs-target="#format-help-modal">
+                                                <i class="ph ph-text-align-left"></i>
+                                            </a>
+                                            <a href="#!" class="text-lg text-muted text-primary-hover" id="send-button">
+                                                <i class="ph ph-paper-plane-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mt-4">
                         <div class="card">
                             <div class="card-body pb-0">
                                 <div class="list-group list-group-flush">
@@ -320,43 +357,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-9 mt-4">
-                        <div class="card h-lg-full">
-                            <div class="card-body py-0 position-relative">
-                                <div class="list-group list-group-flush" id="chat-box">
-                                    <!-- Chat messages will dynamically appear here -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card mt-4">
-                            <div>
-                                <div class="textarea-autosize p-6" data-replicated-value="">
-                                    <textarea id="chat-input" class="form-control border-0 shadow-none p-0" rows="2"
-                                        placeholder="Type your message..."
-                                        oninput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
-                                </div>
-                                <div class="d-flex align-items-center px-6 py-3 border-top">
-                                    <div class="flex-fill d-flex align-items-center">
-                                        <h6 class="font-semibold text-xs text-muted text-opacity-70"><i
-                                                class="ph ph-copyright"></i> Copyright Mike 2024</h6>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="hstack gap-5 align-items-center">
-                                            <a href="#!" class="text-lg text-muted text-primary-hover"
-                                                data-bs-toggle="offcanvas" data-bs-target="#format-help-modal">
-                                                <i class="ph ph-text-align-left"></i>
-                                            </a>
-                                            <a href="#!" class="text-lg text-muted text-primary-hover" id="send-button">
-                                                <i class="ph ph-paper-plane-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <!-- End of Chat Container -->
@@ -364,25 +364,6 @@
             <!-- DM Container -->
             <div id="dm-container" class="d-none">
                 <div class="row">
-                    <div class="col-lg-3 mt-4">
-                        <div class="card">
-                            <div class="card-body pb-0">
-                                <div class="mb-4">
-                                    <h4>Your Direct Messages</h4>
-                                </div>
-                                <div class="g-3">
-                                    <div class="input-group input-group-sm input-group-inline mb-1"><span
-                                            class="input-group-text"><i class="ph ph-magnifying-glass"></i></span><input
-                                            type="text" class="form-control" placeholder="Search direct messages"
-                                            id="dm-search-input"></div>
-                                </div>
-                                <div id="dm-list" class="vstack gap-3 my-4">
-                                    <!-- DM user list will dynamically appear here -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="col-lg-8 mt-4">
                         <div class="card">
                             <div class="card-body py-0 position-relative">
@@ -412,6 +393,25 @@
                                             </a>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 mt-4">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <div class="mb-4">
+                                    <h4>Your Direct Messages</h4>
+                                </div>
+                                <div class="g-3">
+                                    <div class="input-group input-group-sm input-group-inline mb-1"><span
+                                            class="input-group-text"><i class="ph ph-magnifying-glass"></i></span><input
+                                            type="text" class="form-control" placeholder="Search direct messages"
+                                            id="dm-search-input"></div>
+                                </div>
+                                <div id="dm-list" class="vstack gap-3 my-4">
+                                    <!-- DM user list will dynamically appear here -->
                                 </div>
                             </div>
                         </div>
