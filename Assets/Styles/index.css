@@ -5,7 +5,7 @@
 
 #chat-box, #dm-chat-box {
     height: 340px;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 .chat-message {
